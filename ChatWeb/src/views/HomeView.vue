@@ -5,5 +5,5 @@ import Chat from '@/components/Chat.vue';
 
 <template>
     <Sidebar/>
-    <Chat />
+    <!-- <Chat /> -->
 </template>

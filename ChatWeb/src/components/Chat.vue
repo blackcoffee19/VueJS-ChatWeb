@@ -1,3 +1,56 @@
+<script>
+export default {
+  data() {
+    return {
+      websocket: null, // Đối tượng WebSocket
+      message: "", // Lưu trữ tin nhắn nhận được từ server
+    };
+  },
+  methods: {
+    connectWebSocket() {
+      // Kết nối tới WebSocket server
+      this.websocket = new WebSocket("wss://example.com/socket"); // Thay bằng URL WebSocket của bạn
+
+      // Xử lý khi kết nối thành công
+      this.websocket.onopen = () => {
+        console.log("WebSocket connected!");
+        this.websocket.send("Hello Server!"); // Gửi tin nhắn khi kết nối
+      };
+
+      // Xử lý khi nhận tin nhắn từ server
+      this.websocket.onmessage = (event) => {
+        console.log("Message received:", event.data);
+        this.message = event.data; // Cập nhật message
+      };
+
+      // Xử lý khi WebSocket đóng
+      this.websocket.onclose = () => {
+        console.log("WebSocket disconnected.");
+      };
+
+      // Xử lý lỗi
+      this.websocket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+    },
+    sendMessage() {
+      if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
+        this.websocket.send("Message from Vue.js!");
+      } else {
+        console.warn("WebSocket is not connected.");
+      }
+    },
+  },
+  mounted() {
+    this.connectWebSocket(); // Kết nối WebSocket khi component được mount
+  },
+  beforeDestroy() {
+    if (this.websocket) {
+      this.websocket.close(); // Đóng WebSocket khi component bị hủy
+    }
+  },
+};
+</script>
 <template>
     <main class="main">
         <div class="container h-100">

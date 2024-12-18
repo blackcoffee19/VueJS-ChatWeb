@@ -1,5 +1,5 @@
 <script setup lang="js">
-
+import axios from 'axios';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
@@ -19,12 +19,25 @@ export default {
             password: ""
         }
     },
-    methods:{
-        login(){
-            console.log("Login func in component");
-            this.$store.dispatch("AUTH/login", {username: this.username, password: this.password});
-        }   
-    } 
+    methods: {
+    async onLogin() {
+      try {
+        const response = await axios.post("https://localhost:7223/api/Auth/login", {
+          username: this.username,
+          password: this.password,
+        });
+        const token = response.data.token; // JWT Token từ API
+        const user = { id: response.data.userId, username: this.username }; // User info
+        // Gọi action login từ Vuex store
+        this.$store.dispatch("login", { token, user });
+
+        // Chuyển hướng sau khi login thành công
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    },
+  },
 }
 </script>
 
@@ -59,7 +72,7 @@ export default {
                             <label for="email2">Email</label>
                         </FloatLabel>
                         <FloatLabel>
-                            <InputText id="password2"  />
+                            <Password id="password2" v-model="password" />
                             <label for="password2">Password</label>
                         </FloatLabel>
                     </div>
@@ -68,7 +81,7 @@ export default {
     
             </div>
             <div class="form-container sign-in">
-                <form @submit.prevent="login">
+                <form @submit.prevent="onLogin">
                     <h1>Sign In</h1>
                     <div class="social-icons ">
                         <a href="#" class="icon">

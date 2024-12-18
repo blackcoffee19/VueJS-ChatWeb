@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "WgNZr7yUdgM6PlHoD5mk2MlCLJA8wRX/k4YXmv6l6BU=",
+  "Source": "ChatWorkServer",
+  "BasePath": "_content/ChatWorkServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

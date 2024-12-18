@@ -2,6 +2,8 @@
 import Menu from 'primevue/menu';
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import stores from '@/stores';
+import router from '@/router';
 const menuitems = ref([
     {
         items: [
@@ -32,6 +34,15 @@ const menuitems = ref([
         ]
     }
 ]);
+const isAuthenticated =stores.getters.isAuthenticated;
+const user = stores.getters.getUser;
+console.log(user, isAuthenticated);
+
+const logout = ()=> {
+    stores.dispatch("logout"); // Gọi action logout
+    router.push("/login");   // Chuyển hướng
+    };
+
 </script>
 <style>
 .p-menu{
@@ -94,11 +105,9 @@ const menuitems = ref([
                 </a>
             </template>
             <template #end>
-                <router-link >
-                    <RouterLink to="/login" class="p-menu-item-link" >
-                        <span class="pi pi-user" ></span>
-                    </RouterLink>
-                </router-link>
+                <a @click="logout"  class="p-menu-item-link">
+                    <span class="pi pi-user" ></span>
+                </a>
             </template>
         </Menu>
     </nav>
