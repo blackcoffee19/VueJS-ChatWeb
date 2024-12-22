@@ -36,6 +36,107 @@
         }
       }
     },
+    "/api/Chat/{userId}/{grId}": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "grId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Chat": {
+      "post": {
+        "tags": [
+          "Chat"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatForm"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatForm"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatForm"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ws": {
+      "get": {
+        "tags": [
+          "Chat"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Users": {
       "get": {
         "tags": [
@@ -121,6 +222,44 @@
       }
     },
     "/api/Users/profie": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/ListGroupChat": {
       "get": {
         "tags": [
           "Users"
@@ -301,6 +440,71 @@
   },
   "components": {
     "schemas": {
+      "ChatDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "textMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "imgMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isSeen": {
+            "type": "boolean"
+          },
+          "userChat": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "groupChat": {
+            "$ref": "#/components/schemas/GroupChatDto"
+          },
+          "timeSpan": {
+            "type": "string",
+            "nullable": true
+          },
+          "userImg": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChatForm": {
+        "type": "object",
+        "properties": {
+          "textMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "ChatModel": {
         "type": "object",
         "properties": {
@@ -328,11 +532,62 @@
             "type": "integer",
             "format": "int32"
           },
+          "isSeen": {
+            "type": "boolean"
+          },
           "userChat": {
             "$ref": "#/components/schemas/UsersModel"
           },
           "groupChat": {
             "$ref": "#/components/schemas/GroupChatModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GroupChatDto": {
+        "type": "object",
+        "properties": {
+          "grId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "subName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userCreatedId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "blockedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "memeberGroup": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberGroupDto"
+            },
+            "nullable": true
+          },
+          "chatsSend": {
+            "$ref": "#/components/schemas/ChatDto"
           }
         },
         "additionalProperties": false
@@ -398,6 +653,37 @@
         },
         "additionalProperties": false
       },
+      "MemberGroupDto": {
+        "type": "object",
+        "properties": {
+          "memId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "groupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "groupChat": {
+            "$ref": "#/components/schemas/GroupChatDto"
+          },
+          "isAdmin": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "MemeberGroupModel": {
         "required": [
           "groupId",
@@ -455,6 +741,27 @@
           },
           "isAdmin": {
             "type": "boolean"
+          },
+          "groupsJoined": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberGroupDto"
+            },
+            "nullable": true
+          },
+          "groupCreated": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupChatDto"
+            },
+            "nullable": true
+          },
+          "chatsSend": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -553,3 +553,5 @@ D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\refint\ChatWorkServ
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\ChatWorkServer.pdb
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\ChatWorkServer.genruntimeconfig.cache
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\ref\ChatWorkServer.dll
+D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\bin\Debug\net8.0\package-lock.json
+D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll

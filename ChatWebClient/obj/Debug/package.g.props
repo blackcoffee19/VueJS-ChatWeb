@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <PackageJsonName Condition="$(PackageJsonName) == ''">chatwebclient</PackageJsonName>
+    <PackageJsonVersion Condition="$(PackageJsonVersion) == ''">0.0.0</PackageJsonVersion>
+    <PackageJsonPrivate Condition="$(PackageJsonPrivate) == ''">true</PackageJsonPrivate>
+    <PackageJsonType Condition="$(PackageJsonType) == ''">module</PackageJsonType>
+    <PackageJsonScriptsDev Condition="$(PackageJsonScriptsDev) == ''">vite</PackageJsonScriptsDev>
+    <PackageJsonScriptsBuild Condition="$(PackageJsonScriptsBuild) == ''">vite build</PackageJsonScriptsBuild>
+    <PackageJsonScriptsPreview Condition="$(PackageJsonScriptsPreview) == ''">vite preview</PackageJsonScriptsPreview>
+    <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint . --fix</PackageJsonScriptsLint>
+    <PackageJsonDependenciesMicrosoftSignalr Condition="$(PackageJsonDependenciesMicrosoftSignalr) == ''">^8.0.7</PackageJsonDependenciesMicrosoftSignalr>
+    <PackageJsonDependenciesPopperjsCore Condition="$(PackageJsonDependenciesPopperjsCore) == ''">^2.11.8</PackageJsonDependenciesPopperjsCore>
+    <PackageJsonDependenciesPrimevueThemes Condition="$(PackageJsonDependenciesPrimevueThemes) == ''">^4.2.5</PackageJsonDependenciesPrimevueThemes>
+    <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.7.9</PackageJsonDependenciesAxios>
+    <PackageJsonDependenciesBootstrap Condition="$(PackageJsonDependenciesBootstrap) == ''">^5.3.3</PackageJsonDependenciesBootstrap>
+    <PackageJsonDependenciesChatweb Condition="$(PackageJsonDependenciesChatweb) == ''">file:</PackageJsonDependenciesChatweb>
+    <PackageJsonDependenciesPinia Condition="$(PackageJsonDependenciesPinia) == ''">^2.2.6</PackageJsonDependenciesPinia>
+    <PackageJsonDependenciesPrimeflex Condition="$(PackageJsonDependenciesPrimeflex) == ''">^3.3.1</PackageJsonDependenciesPrimeflex>
+    <PackageJsonDependenciesPrimeicons Condition="$(PackageJsonDependenciesPrimeicons) == ''">^7.0.0</PackageJsonDependenciesPrimeicons>
+    <PackageJsonDependenciesPrimevue Condition="$(PackageJsonDependenciesPrimevue) == ''">^4.2.5</PackageJsonDependenciesPrimevue>
+    <PackageJsonDependenciesVue Condition="$(PackageJsonDependenciesVue) == ''">^3.5.13</PackageJsonDependenciesVue>
+    <PackageJsonDependenciesVueRouter Condition="$(PackageJsonDependenciesVueRouter) == ''">^4.4.5</PackageJsonDependenciesVueRouter>
+    <PackageJsonDependenciesVuex Condition="$(PackageJsonDependenciesVuex) == ''">^4.1.0</PackageJsonDependenciesVuex>
+    <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^9.14.0</PackageJsonDevdependenciesEslintJs>
+    <PackageJsonDevdependenciesVitejsPluginVue Condition="$(PackageJsonDevdependenciesVitejsPluginVue) == ''">^5.2.1</PackageJsonDevdependenciesVitejsPluginVue>
+    <PackageJsonDevdependenciesEslint Condition="$(PackageJsonDevdependenciesEslint) == ''">^9.14.0</PackageJsonDevdependenciesEslint>
+    <PackageJsonDevdependenciesEslintPluginVue Condition="$(PackageJsonDevdependenciesEslintPluginVue) == ''">^9.30.0</PackageJsonDevdependenciesEslintPluginVue>
+    <PackageJsonDevdependenciesSassEmbedded Condition="$(PackageJsonDevdependenciesSassEmbedded) == ''">^1.83.0</PackageJsonDevdependenciesSassEmbedded>
+    <PackageJsonDevdependenciesVite Condition="$(PackageJsonDevdependenciesVite) == ''">^6.0.1</PackageJsonDevdependenciesVite>
+    <PackageJsonDevdependenciesVitePluginVueDevtools Condition="$(PackageJsonDevdependenciesVitePluginVueDevtools) == ''">^7.6.5</PackageJsonDevdependenciesVitePluginVueDevtools>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,1 @@
+D:\TestingArea\VueJS-ChatWeb\ChatWebClient\obj\Debug\chatwebclient.esproj.CoreCompileInputs.cache

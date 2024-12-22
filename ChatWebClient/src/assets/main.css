@@ -1,0 +1,71 @@
+/* @import './base.css'; */
+/* @import './layout/layout.scss'; */
+/* @import 'primeicons/primeicons.css'; */
+/* @import './demo/demo.scss'; */
+
+
+body{
+  background-color: #c9d6ff;
+  height: 100vh;
+}
+main{
+  height: 100vh;
+  width: 100%;
+}
+.container{
+  background-color: #FFF;
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+}
+.container p{
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.3px;
+  margin: 20px 0;
+}
+.container i{
+  font-size: 12px;
+}
+.container a{
+  color: #333;
+  font-size: 13px;
+  text-decoration: none;
+  margin: 15px 0 10px;
+}
+.container button{
+  background-color: #512da8;
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 45px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.container button.hidden{
+  background-color: transparent;
+  border-color: #fff;
+}
+.container form{
+  background-color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  height: 100%;
+}
+.container input{
+  background-color: #EEE;
+  font-size: 13px;
+  border: none;
+  margin: 8px 0;
+  outline: none;
+}

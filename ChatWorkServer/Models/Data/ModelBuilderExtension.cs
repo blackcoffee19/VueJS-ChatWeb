@@ -23,7 +23,8 @@ namespace ChatWorkServer.Models.Data
             builder.Entity<GroupChatModel>().HasData(
               new GroupChatModel(1,"RiaHina","XG1",2,DateTime.Now),
               new GroupChatModel(2,"Chinata","XG2",7,DateTime.Now),
-              new GroupChatModel(3,"Mavey","XG3",4,DateTime.Now)
+              new GroupChatModel(3,"Mavey","XG3",4,DateTime.Now),
+              new GroupChatModel(4,"Osaka Sister","XG4",3,DateTime.Now)
             );
             builder.Entity<MemeberGroupModel>().HasData(
                 new MemeberGroupModel(1,2,1,DateTime.Now),
@@ -31,9 +32,17 @@ namespace ChatWorkServer.Models.Data
                 new MemeberGroupModel(3,2,2,DateTime.Now),
                 new MemeberGroupModel(4,7,2,DateTime.Now),
                 new MemeberGroupModel(5,4,3,DateTime.Now),
-                new MemeberGroupModel(6,6,3,DateTime.Now)
+                new MemeberGroupModel(6,6,3,DateTime.Now),
+                new MemeberGroupModel(7, 3, 4, DateTime.Now),
+                new MemeberGroupModel(8, 7, 4, DateTime.Now)
             );
-
+            builder.Entity<ChatModel>().HasData(
+                new ChatModel(1, "Hi Hi-chan <3", 3, 1, true),
+                new ChatModel(2, "Hi Juria", 2, 1, true),
+                new ChatModel(3, "I miss you ;o;", 3, 1, false),
+                new ChatModel(4, "Have time Hi-chan?", 7, 2, false),
+                new ChatModel(5, "Hang out Juria? I'll ask Hinata too", 7, 4, false)
+                );
         }
     }
 }

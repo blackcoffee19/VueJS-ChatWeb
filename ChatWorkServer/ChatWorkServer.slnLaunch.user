@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "ChatWorkServer.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\ChatWebClient\\chatwebclient.esproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

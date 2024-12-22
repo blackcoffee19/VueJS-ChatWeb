@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using ChatWorkServer.DTOs;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ChatWorkServer.Common
@@ -21,6 +22,31 @@ namespace ChatWorkServer.Common
             {
             }
             return "";
+        }
+        public static string GetTimeSpan(DateTime CreatedDate) {
+            TimeSpan span = DateTime.Now - CreatedDate;
+            string spantime = "";
+            if (span.TotalDays == 1)
+            {
+                spantime = string.Format("Yesterday");
+            }
+            else if (span.TotalDays > 1)
+            {
+                spantime = string.Format("{0} days", Math.Floor(span.TotalDays));
+            }
+            else if (span.TotalHours > 1)
+            {
+                spantime = string.Format("{0} hours ago", Math.Floor(span.TotalHours));
+            }
+            else if (span.TotalMinutes > 0)
+            {
+                spantime = string.Format("{0} minutes ago", Math.Floor(span.TotalMinutes));
+            }
+            else
+            {
+                spantime = string.Format("{0} seconds ago", Math.Floor(span.TotalSeconds));
+            }
+            return spantime;
         }
     }
 }

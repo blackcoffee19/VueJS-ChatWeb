@@ -9,6 +9,9 @@ using ChatWorkServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using ChatWorkServer.Common;
 using System.Security.Claims;
+using NuGet.Packaging;
+using ChatWorkServer.DTOs;
+using Humanizer;
 
 namespace ChatWorkServer.Controllers
 {
@@ -46,6 +49,41 @@ namespace ChatWorkServer.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("ListGroupChat")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetListGroupChat()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.Sid);
+            if (userId != null)
+            {
+                int id = 0;
+                bool parse = int.TryParse(userId, out id);
+                List<int> ListGr = _context.Memebers.Where(x=> x.UserId ==  id).Select(x=> x.GroupId).ToList();
+                List<GroupChatModel> ListData= await _context.GroupChats.Where(x => ListGr.Contains(x.GrId)).ToListAsync();
+                List<GroupChatDto> ListGroup = new List<GroupChatDto>();
+                ListData.ForEach( x =>
+                {
+                    GroupChatDto group = new GroupChatDto(x.GrId, x.Name, x.UserCreatedId, x.CreatedDate, x.Code);
+                    List<MemeberGroupModel> ListMemberGroups = _context.Memebers.Where(y => y.GroupId == x.GrId).ToList();
+                    List<MemberGroupDto> ListMemberGroupsDto = new List<MemberGroupDto>();
+                    ListMemberGroups.ForEach(y =>
+                    {
+                        ListMemberGroupsDto.Add(new MemberGroupDto(y.UserId, y.GroupId, x.UserCreatedId == y.UserId, y.CreatedDate));
+                    });
+                    group.MemeberGroup = ListMemberGroupsDto;
+                    MemberGroupDto? mem = ListMemberGroupsDto.FirstOrDefault(y => y.UserId != id);
+                    UsersModel user= _context.Users.FirstOrDefault(y => y.UsID == mem.UserId);
+                    group.Image = user.Avatar;
+                    group.SubName = user.Fullname;
+                    ChatModel  chatFo =  _context.Chats.Where(y => y.GroupId == x.GrId).OrderByDescending(y => y.CreatedDate).First();
+                    group.ChatsSend = new ChatDto(chatFo.Id, chatFo.TextMessage, chatFo.ImgMessage, chatFo.CreatedDate, chatFo.UserId, chatFo.GroupId, chatFo.IsSeen, TUtility.GetTimeSpan(chatFo.CreatedDate));
+                    ListGroup.Add(group);
+                });
+
+                return Ok(ListGroup);
+            }
+            return BadRequest();
+        }
+
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUsersModel(int id)

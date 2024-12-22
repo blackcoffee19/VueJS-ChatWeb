@@ -1,4 +1,5 @@
 ﻿using ChatWorkServer.Models;
+using ChatWorkServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +12,9 @@ builder.Services.AddCors(options =>
     {
         builder.AllowAnyOrigin()
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .WithOrigins("http://localhost:43696") // Thay bằng URL client
+               .AllowCredentials(); // Cho phép WebSocket;
     });
 });
 var connectionString = builder.Configuration.GetConnectionString("AppDbContextConnection") ?? throw new InvalidOperationException("Connection string 'AppDbContextConnection' not found.");
@@ -40,6 +43,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -60,9 +64,9 @@ else
 // Sử dụng CORS middleware
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
+app.MapHub<ChatHub>("/chatHub");
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseWebSockets();
 app.MapControllers();
-
 app.Run();
