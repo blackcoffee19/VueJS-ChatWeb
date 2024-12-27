@@ -6,12 +6,15 @@ namespace ChatWorkServer.Models
 {
     public class ChatDbContext : DbContext 
     {
+
         public ChatDbContext(DbContextOptions<ChatDbContext> op) :base(op) { }
         public DbSet<UsersModel>? Users { get; set; }
         public DbSet<GroupChatModel>? GroupChats { get; set; }
         public DbSet<MemeberGroupModel>? Memebers { get; set; }
         public DbSet<ChatModel>? Chats { get; set; }
-        
+        public DbSet<RequirementModel>? Requirements { get; set; }
+        public DbSet<ConnectionModel>? Connections { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
 

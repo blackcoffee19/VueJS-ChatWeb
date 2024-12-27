@@ -23,13 +23,14 @@ namespace ChatWorkServer.Models
         public virtual ICollection<GroupChatModel> GroupCreated { get; set; } = new List<GroupChatModel>();
         public virtual ICollection<ChatModel> ChatsSend { get; set; } =new List<ChatModel>();
         public UsersModel() {  }
-        public UsersModel(int Id,string Username, string Fullname, string Password, bool IsAdmin, DateTime date) {
+        public UsersModel(int Id,string Username, string Fullname, string Password, bool IsAdmin, DateTime date, string avatar) {
             this.UsID = Id;
             this.Username = Username;
             this.Fullname = Fullname;
             this.Password = Password;
             this.IsAdmin = IsAdmin;
             this.CreatedDate = date;
+            this.Avatar = avatar;
         }
     }
 }

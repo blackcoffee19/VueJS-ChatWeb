@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ChatWorkServer.Controllers
 {
@@ -27,11 +28,24 @@ namespace ChatWorkServer.Controllers
             public int GroupId { get; set; }
             
         }
-        [HttpGet("{userId}/{grId}")]
-        public async Task<ActionResult<IEnumerable<ChatDto>>> GetListChats( int userId,int grId)
+        [HttpGet("{grId}")]
+        public async Task<ActionResult<IEnumerable<ChatDto>>> GetListChats( int grId)
         {
+            var userId = User.FindFirstValue(ClaimTypes.Sid);
+            int  usId = 0;
+            if (userId != null)
+            {
+                usId = int.Parse(userId);
+            }
+            else {
+                return BadRequest();
+            }
+            bool checkMem = await _context.Memebers.AnyAsync(x => x.GroupId == grId && x.UserId == usId);
+            if (!checkMem) {
+                return BadRequest();
+            }
             var result = await _context.Chats.Where(x=> x.GroupId == grId).ToListAsync();
-            ChatModel? lastestChat = result.FirstOrDefault(x => x.UserId != userId && !x.IsSeen);
+            ChatModel? lastestChat = result.FirstOrDefault(x => x.UserId != usId && !x.IsSeen);
             if (lastestChat != null) {
                 lastestChat.IsSeen = true;
                 _context.Chats.Update(lastestChat);

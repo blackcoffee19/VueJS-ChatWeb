@@ -2,14 +2,17 @@
   import { mapGetters, useStore, mapActions } from 'vuex';
   import UserService from '@/services';
   import ChatService from '@/services/chat';
-import chat from '../services/chat';
+  import chat from '../services/chat';
+  import ChatHeader from './ChatHeader.vue';
   export default {
+    components: {
+      ChatHeader
+    },
     setup() {
       
-     
     },
     computed: {
-      ...mapGetters(['getGroupChatSelected','getGroupChatSelectedCode', 'getChats', 'isLoading', 'getUserId', 'getMessage','getMessagesSocket']),
+      ...mapGetters(['getGroupChatSelected', 'getGroupChatSelectedCode', 'getChats', 'isLoading', 'getUserId', 'getMessage', 'getMessagesSocket']),
       message: {
         get() {
           return this.getMessage; // Lấy giá trị từ getter
@@ -20,7 +23,7 @@ import chat from '../services/chat';
       },
     },
     methods: {
-       ...mapActions(['updateMessage']),
+      ...mapActions(['updateMessage','getTimeSpanLastestChat']),
       sendMessage() {
         if (this.getMessage == null || this.getMessage == "") return;
         this.$store.dispatch("sendMessage", {
@@ -29,31 +32,40 @@ import chat from '../services/chat';
           group: this.getGroupChatSelected,
           groupName: this.getGroupChatSelectedCode,
         });
-    },
+        this.$store.dispatch("updateMessage", "");
+      },
       addNewMessage() {
-      ChatService.SendMessage().then(x => {
-        if (x == 1) {
-          ChatService.GetListChats(this.getGroupChatSelected);
+        ChatService.SendMessage().then(x => {
+          if (x == 1) {
+            ChatService.GetListChats(this.getGroupChatSelected);
+          }
+        });   
+      },
+      getTimeSpanChat(chatp) {
+        let chat = Object.assign({}, chatp);
+        if (chat != undefined && chat.createdAt != undefined) {
+        let date = new Date(new Date(chat.createdDate).getTime());
+          // Tính chênh lệch thời gian (milliseconds)
+          const differenceInMilliseconds = new Date() - date;
+          // Chuyển đổi milliseconds sang các đơn vị thời gian
+          const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
+          //console.log(`days: ${days}\nhours: ${hours}\nminutes: ${minutes}\nseconds: ${seconds}`);
+          return days > 0 ? days + ' days' : (hours > 0 ? hours + ' hours' : (minutes > 0 ? minutes + ' minutes' : seconds + ' seconds')) + ' ago';
+        } else {
+          return chat.timeSpan;
         }
-      });   
-    }
-
+      }
   },
-    mounted() {
-      // Kết nối WebSocket khi component được mount
-    this.$store.dispatch("connectWebSocket");
-  },
-  beforeDestroy() {
-    if (this.websocket) {
-      this.websocket.close(); // Đóng WebSocket khi component bị hủy
-    }
-  },
+  
 };
 </script>
 <template>
     <main class="main">
       <div class="container h-100">
-
+        <ChatHeader  v-if="getGroupChatSelected !=0 && !isLoading" />
         <div class="d-flex flex-column h-100 justify-content-center text-center" v-if="getGroupChatSelected ==0 && isLoading">
           <div class="mb-6">
             <span class="icon icon-xl text-muted">
@@ -79,7 +91,7 @@ import chat from '../services/chat';
                       <div class="card px-3 py-1 d-flex flex-column"  >
                         <div class="fw-normal fs-5">{{  item.textMessage }}</div>
                         <div>
-                          <span class="fw-light">{{item.timeSpan}}</span>
+                          <span class="fw-light">{{getTimeSpanChat(item)}}</span>
                         </div>
                       </div>
                     </div>

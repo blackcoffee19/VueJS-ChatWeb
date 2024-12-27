@@ -11,14 +11,14 @@ namespace ChatWorkServer.Models.Data
         public static void Seed(ModelBuilder builder) {
 
             builder.Entity<UsersModel>().HasData(
-              new UsersModel(1,"tuong", "CatTuong", TUtility.GetMD5("123"), true, DateTime.Now),
-              new UsersModel(2,"hinata", "Hinata Sohara", TUtility.GetMD5("hinata"), true, DateTime.Now),
-              new UsersModel(3,"juria", "Juria", TUtility.GetMD5("juria"), false, DateTime.Now),
-              new UsersModel(4,"maya", "Maya", TUtility.GetMD5("maya"), false, DateTime.Now),
-              new UsersModel(5,"jurin", "Jurin", TUtility.GetMD5("jurin"), false, DateTime.Now),
-              new UsersModel(6,"harvey", "Harvey", TUtility.GetMD5("harvey"), false, DateTime.Now),
-              new UsersModel(7,"chisa", "Chisa", TUtility.GetMD5("chisa"), false, DateTime.Now),
-              new UsersModel(8,"cocona", "Cocona", TUtility.GetMD5("cocona"), false, DateTime.Now)
+              new UsersModel(1,"tuong", "CatTuong", TUtility.GetMD5("123"), true, DateTime.Now, "tuong.png"),
+              new UsersModel(2,"hinata", "Hinata Sohara", TUtility.GetMD5("hinata"), true, DateTime.Now, "hinata-1.jpg"),
+              new UsersModel(3,"juria", "Juria", TUtility.GetMD5("juria"), false, DateTime.Now,"juria-1.jpg"),
+              new UsersModel(4,"maya", "Maya", TUtility.GetMD5("maya"), false, DateTime.Now,"maya-1.jpg"),
+              new UsersModel(5,"jurin", "Jurin", TUtility.GetMD5("jurin"), false, DateTime.Now,"jurin-1.jpg"),
+              new UsersModel(6,"harvey", "Harvey", TUtility.GetMD5("harvey"), false, DateTime.Now,"harvey-1.jpg"),
+              new UsersModel(7,"chisa", "Chisa", TUtility.GetMD5("chisa"), false, DateTime.Now,"chisa-1.jpg"),
+              new UsersModel(8,"cocona", "Cocona", TUtility.GetMD5("cocona"), false, DateTime.Now,"cocona-1.jpg")
             );
             builder.Entity<GroupChatModel>().HasData(
               new GroupChatModel(1,"RiaHina","XG1",2,DateTime.Now),

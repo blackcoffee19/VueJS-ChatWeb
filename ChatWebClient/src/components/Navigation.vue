@@ -1,46 +1,65 @@
-<script setup lang="js">
-import Menu from 'primevue/menu';
+<script lang="js">
+  import Menu from 'primevue/menu';
+  import {  mapGetters } from 'vuex';
 import { RouterLink } from 'vue-router';
 import stores from '@/stores';
 import router from '@/router';
-const menuitems = [
-    {
-        items: [
+  export default {
+    components: {
+      Menu,
+      RouterLink
+    },
+    setup() {
+      const menuitems = [
+        {
+          items: [
             {
-                label: 'New Post',
-                icon: 'pi pi-fw  pi-pen-to-square'
+              label: 'New Post',
+              icon: 'pi pi-fw  pi-pen-to-square',
+              route: '/'
             },
             {
-                label: 'People',
-                icon: 'pi pi-fw pi-users'
+              label: 'People',
+              icon: 'pi pi-fw pi-users',
+              route: '/search'
             },
             {
-                label: 'Chat',
-                icon: 'pi pi-fw pi-comment'
+              label: 'Chat',
+              icon: 'pi pi-fw pi-comment',
+              route: '/'
             },
             {
-                label: 'Notification',
-                icon: 'pi pi-fw pi-bell'
+              label: 'Notification',
+              icon: 'pi pi-fw pi-bell',
+              route: '/notification'
             },
             {
-                label: 'App',
-                icon: 'pi pi-fw pi-th-large'
+              label: 'App',
+              icon: 'pi pi-fw pi-th-large',
+              route: '/'
             },
             {
-                label: 'Theme',
-                icon: 'pi pi-fw pi-moon'
+              label: 'Theme',
+              icon: 'pi pi-fw pi-moon',
+              route: '/'
             }
-        ]
+          ]
+        }
+      ];
+      return { menuitems }
+
+    },
+    computed: {
+      ...mapGetters(['getRequirements'])
+    },
+    methods: {
+      logout()  {
+        stores.dispatch("logout"); // Gọi action logout
+        router.push("/login");   // Chuyển hướng
+      }
     }
-];
-const isAuthenticated =stores.getters.isAuthenticated;
-const user = stores.getters.getUser;
 
-const logout = ()=> {
-    stores.dispatch("logout"); // Gọi action logout
-    router.push("/login");   // Chuyển hướng
-    };
-
+  }
 </script>
 <style>
 .p-menu{
@@ -93,11 +112,16 @@ const logout = ()=> {
                 </a>
             </template>
             <template #item="{ item, props }">
-                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                    <a v-ripple :href="href" v-bind="props.action" @click="navigate">
-                        <span :class="item.icon" ></span>
-                    </a>
-                </router-link>
+              <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                <OverlayBadge :value="getRequirements.length" severity="danger" v-if="getRequirements.length>0 && item.label == 'Notification'">
+                  <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                    <span :class="item.icon"></span>
+                  </a>
+                </OverlayBadge>
+                <a v-ripple :href="href" v-bind="props.action" @click="navigate"  v-if="getRequirements.length==0 || item.label != 'Notification'">
+                  <span :class="item.icon"></span>
+                </a>
+              </router-link>
                 <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
                     <span :class="item.icon" ></span>
                 </a>

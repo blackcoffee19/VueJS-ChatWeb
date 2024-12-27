@@ -11,7 +11,21 @@ const router = createRouter({
           name: "home",
           component: ()=> import("@/views/HomeView.vue")
         },
-        
+        {
+          path: "/search",
+          name: "search",
+          component: () => import("@/views/SearchView.vue")
+        },
+        {
+          path: '/notification',
+          name: 'notification',
+          component: () => import('@/views/NotificationsView.vue'),
+        },
+        {
+          path: '/videocall',
+          name: 'video call',
+          component: () => import('@/views/VideoCallView.vue')
+        }
       ]
     },
     {

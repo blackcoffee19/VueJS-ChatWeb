@@ -8,7 +8,7 @@ export default {
     name: 'ItemList',
     computed: {
       ...mapState(['groupChatSelected']),
-      ...mapGetters(["getUserId"])
+      ...mapGetters(["getUserId", "getLastestChats"]),
     },
    setup() {
     const store = useStore();
@@ -18,10 +18,15 @@ export default {
     const fetchItems = async () => {
       try {
         const response = await UserService.getListGroupChat();
-        items.value = response.data;
         let data = await response.data;
+        
+        items.value = response.data;
         for (let i = 0; i < data.length; i++) {
           store.dispatch("addGroupChat", { groupName: data[i].code });
+          if (data[i].chatsSend != null) {
+            let chat = { groupId: data[i].grId, text: data[i].chatsSend.textMessage, createdAt: data[i].chatsSend.createdDate, userId: data[i].chatsSend.userId };
+            store.dispatch("loadLastesChats", chat);
+          }
         }
       } catch (err) {
         error.value = err.message;
@@ -35,10 +40,33 @@ export default {
     return { items, loading, error };
     },
     methods: {
-      ...mapActions(['updateGroupChat', "updateChats","updateGroupChatCode"]),
+      ...mapActions(['updateGroupChat', "updateChats", "updateGroupChatCode", "loadLastesChats"]),
       handleChooseGroup(id, code) {
         ChatService.GetListChats(id);
         this.updateGroupChatCode(code);
+      },
+      getLastestChatText(groupId) {
+        let chat = Object.assign({},this.getLastestChats.find((x) => x.groupId === groupId));
+        return chat?.text || 'No text available';
+      },
+      getTimeSpanLastestChat( grID) {
+        let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === grID));
+        if (chat != undefined && chat.createdAt != undefined) {
+          let date = new Date(new Date(chat.createdAt).getTime());
+          // Tính chênh lệch thời gian (milliseconds)
+          const differenceInMilliseconds = new Date() - date;
+          // Chuyển đổi milliseconds sang các đơn vị thời gian
+          const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
+          return days > 0 ? days + ' days' : (hours > 0 ? hours + ' hours' : (minutes > 0 ? minutes + ' minutes' : seconds + ' seconds')) + ' ago';
+
+        }
+      },
+      getNotification(grouId) {
+        let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === grouId));
+        return chat.id != 0 && !chat.isSeen && chat.userId != this.getUserId;
       }
     }
 };
@@ -74,7 +102,7 @@ export default {
                                     <div class="p-col-12"  v-for="(item, index) in slotProps.items" :key="index">
                                       <div class="mb-2 card position-relative" @click="handleChooseGroup(item.grId, item.code)">
                                         <div class="flex flex-col sm:items-center p-1 gap-2 overflow-hidden align-items-center" :class="{ 'border-t border-surface-500 dark:border-surface-700': index !== 0 } "  style="height: 110px;">
-                                          <span class="position-absolute top-0 start-0 translate-middle p-2 bg-danger border border-light rounded-circle" v-if="item.chatsSend.id != 0 && !item.chatsSend.isSeen && item.chatsSend.userId != getUserId">
+                                          <span class="position-absolute top-0 start-0 translate-middle p-2 bg-danger border border-light rounded-circle" v-if=" getNotification(item.grId)">
                                             <span class="visually-hidden">New alerts</span>
                                           </span>
                                           <div class="w-3relative">
@@ -85,11 +113,14 @@ export default {
                                               <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{ item.subName }}</span>
                                               <div class="text-lg font-medium mt-2">{{ item.name }}</div>
                                             </div>
-                                            <div class="text-left" v-if="item.chatsSend.id != 0"  >
-                                                <span class="fw-normal text-sm">{{ item.chatsSend.textMessage }}</span>
+                                            <div class="text-left" v-if="item.chatsSend!=null && item.chatsSend.id != 0">
+                                              <span class="fw-normal text-sm">{{ getLastestChatText(item.grId) }}</span>
                                             </div>
-                                            <div class="text-left " >
-                                              <span class="fw-light text-sm">{{ item.chatsSend.timeSpan }}</span>
+                                            <div class="text-left" v-if="item.chatsSend==null">
+                                              <span class="fw-normal text-sm text-primary">Start the conversation</span>
+                                            </div>
+                                            <div class="text-left " v-if="item.chatsSend!=null && item.chatsSend.id != 0">
+                                              <span class="fw-light text-sm">{{ getTimeSpanLastestChat(item.grId)}}</span>
                                             </div>
                                           </div>
                                         </div>

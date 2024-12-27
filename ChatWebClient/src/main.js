@@ -11,7 +11,7 @@ import App from './App.vue'
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import router from './router';
-import { Avatar, Button, Card, DataView, InputGroup, InputGroupAddon, InputText } from 'primevue';
+import { Avatar, Button, Card, DataView, InputGroup, InputGroupAddon, InputText, OverlayBadge } from 'primevue';
 
 const app = createApp(App);
 app.use(PrimeVue, {
@@ -31,4 +31,5 @@ app.component('InputGroup', InputGroup);
 app.component('InputGroupAddon', InputGroupAddon);
 app.component('Button', Button);
 app.component('InputText', InputText);
+app.component('OverlayBadge', OverlayBadge);
 app.mount('#app');
