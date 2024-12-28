@@ -114,15 +114,15 @@ import router from '@/router';
             <template #item="{ item, props }">
               <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
                 <OverlayBadge :value="getRequirements.length" severity="danger" v-if="getRequirements.length>0 && item.label == 'Notification'">
-                  <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                  <a :href="href" v-bind="props.action" @click="navigate">
                     <span :class="item.icon"></span>
                   </a>
                 </OverlayBadge>
-                <a v-ripple :href="href" v-bind="props.action" @click="navigate"  v-if="getRequirements.length==0 || item.label != 'Notification'">
+                <a :href="href" v-bind="props.action" @click="navigate"  v-if="getRequirements.length==0 || item.label != 'Notification'">
                   <span :class="item.icon"></span>
                 </a>
               </router-link>
-                <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
                     <span :class="item.icon" ></span>
                 </a>
             </template>

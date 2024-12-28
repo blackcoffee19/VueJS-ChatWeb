@@ -20,6 +20,7 @@
     <PackageJsonDependenciesPrimeicons Condition="$(PackageJsonDependenciesPrimeicons) == ''">^7.0.0</PackageJsonDependenciesPrimeicons>
     <PackageJsonDependenciesPrimevue Condition="$(PackageJsonDependenciesPrimevue) == ''">^4.2.5</PackageJsonDependenciesPrimevue>
     <PackageJsonDependenciesSimplePeer Condition="$(PackageJsonDependenciesSimplePeer) == ''">^9.11.1</PackageJsonDependenciesSimplePeer>
+    <PackageJsonDependenciesSocketIoClient Condition="$(PackageJsonDependenciesSocketIoClient) == ''">^4.8.1</PackageJsonDependenciesSocketIoClient>
     <PackageJsonDependenciesVue Condition="$(PackageJsonDependenciesVue) == ''">^3.5.13</PackageJsonDependenciesVue>
     <PackageJsonDependenciesVueRouter Condition="$(PackageJsonDependenciesVueRouter) == ''">^4.4.5</PackageJsonDependenciesVueRouter>
     <PackageJsonDependenciesVuex Condition="$(PackageJsonDependenciesVuex) == ''">^4.1.0</PackageJsonDependenciesVuex>

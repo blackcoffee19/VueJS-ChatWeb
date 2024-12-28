@@ -27,7 +27,7 @@ namespace ChatWorkServer.Services
                 if (userIdStr != null)
                 {
                     userId = Int32.Parse(userIdStr);
-                    List<ConnectionModel> oldConnections = await _context.Connections.Where(x => x.IsOnline && x.UserId == userId).ToListAsync();
+                    List<ConnectionModel> oldConnections = await _context.Connections.Where(x => x.IsOnline && x.UserId == userId && x.Type == 1).ToListAsync();
                     foreach (var item in oldConnections)
                     {
                         item.IsOnline = false;
@@ -39,6 +39,7 @@ namespace ChatWorkServer.Services
                     conn.UserId = userId;
                     conn.StartedAt = DateTime.Now;
                     conn.IsOnline = true;
+                    conn.Type = 1;
                     _context.Connections.Add(conn);
                     await _context.SaveChangesAsync();
                 }
@@ -112,13 +113,48 @@ namespace ChatWorkServer.Services
             bool checkUs = _context.Users.Any(x => x.UsID == userId);
             bool checkOnl = _context.Connections.Any(x => x.UserId == userId & x.IsOnline);
             if (checkUs&& checkOnl) {
-                ConnectionModel connection = await _context.Connections.FirstAsync(x => x.UserId == userId && x.IsOnline);
+                ConnectionModel connection = await _context.Connections.FirstAsync(x => x.UserId == userId && x.IsOnline && x.Type == 1);
                 Console.WriteLine("Connection to: "+connection.ConnectionId);
                 RequirementModel? req = await _context.Requirements.FirstOrDefaultAsync(x => x.RId == requirementId);
                 if(req!=null)
                 {
                     await Clients.Client(connection.ConnectionId).SendAsync("ReceiveRequest", req.ToJson());
                 }
+            }
+        }
+        public async Task SendRequestCalling(string groupCode) {
+            if (groupCode == null || groupCode == "") {
+                throw new ArgumentException("Group Code is emty");
+            }
+            var userId = Context.User.FindFirst(ClaimTypes.Sid)?.Value;
+            GroupChatModel? checkGroup = _context.GroupChats.FirstOrDefault(x => x.Code == groupCode);
+            int usId = 0;
+            if (checkGroup != null && userId !=null && int.TryParse(userId, out usId ) ) {
+                MemeberGroupModel? mem = _context.Memebers.FirstOrDefault(x => x.GroupId == checkGroup.GrId && x.UserId != usId );
+                if (mem == null) throw new ArgumentException("Can not found user ");
+                ConnectionModel? conn = await _context.Connections.FirstOrDefaultAsync(x => x.IsOnline && x.UserId == mem.UserId && x.Type==1);
+                RequirementModel req = new RequirementModel();
+                req.AssigneeId = mem.UserId;
+                req.RequesterId = usId;
+                req.Type = 3;
+                if (conn == null)
+                {
+                    var connectionId = Context.ConnectionId;
+                    req.Status = false;
+                    req.CreatedDate = DateTime.Now;
+                    _context.Add(req);
+                    _context.SaveChanges();
+                    await Clients.Clients(connectionId).SendAsync("Calling", req.ToJson());
+                }
+                else {
+                    req.Type = 3;
+                    req.Status = true;
+                    req.CreatedDate = DateTime.Now;
+                    _context.Add(req);
+                    _context.SaveChanges();
+                    await Clients.Clients(conn.ConnectionId).SendAsync("Calling", req.ToJson());
+                }
+
             }
         }
     }

@@ -1,67 +1,102 @@
 <script lang="js">
+  import { mapGetters, mapActions, mapState } from 'vuex';
   import { Button} from 'primevue';
-  import SimplePeer from 'simple-peer';
-  import connection from '@/services/video_call_connection';
+  import UserService from '@/services';
+  import store from '@/stores';
  export default {
     components: {
      Button
     },
-    data() {
-      return {
-        localStream: null,
-        peers: {},
-      };
+    computed: {
+      ...mapGetters(['getGroupChatSelected','getCallingFailue']),
+      ...mapState('videocall', ['peerConnection', 'localStream', 'remoteStream', 'signalingService', 'isOffer','connectSuccess']),
     },
-    async mounted() {
-      connection.on('UserJoined', this.handleUserJoined);
-      connection.on('UserLeft', this.handleUserLeft);
-      connection.start();
-      this.initLocalStream();
-    },
-    methods: {
-      async initLocalStream() {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(stream => {
-              this.localStream = stream;
-              this.$refs.localVideo.srcObject = this.localStream;
-            })
-            .catch(error => {
-              console.error('Error accessing media devices.', error);
-            });
-        } else {
-          console.error('getUserMedia is not supported in this browser.');
+    watch: {
+      // Khi stream thay đổi, cập nhật video element
+      localStream(newStream) {
+        console.log("LocalStream set");
+        console.log(newStream)
+        if (this.$refs.localVideo) {
+          this.$refs.localVideo.srcObject = newStream;
         }
       },
-      async startCall() {
-        connection.invoke('JoinGroup', 'group1');
-      },
-      handleUserJoined(userId) {
-        const peer = new SimplePeer({ initiator: true, stream: this.localStream });
-        peer.on('signal', signal => {
-          connection.invoke('SendMessage', 'group1', JSON.stringify({ to: userId, signal }));
-        });
-        peer.on('stream', stream => {
-          this.$refs[`peerVideo-${userId}`].srcObject = stream;
-        });
-        this.peers[userId] = peer;
-      },
-      handleUserLeft(userId) {
-        delete this.peers[userId];
-      },
+      remoteStream(newStream) {
+        console.log("RemoteStream set");
+        console.log(newStream)
+        if (this.$refs.remoteVideo) {
+          this.$refs.remoteVideo.srcObject = newStream;
+        }
+      }
+    },
+    mounted() {
+      UserService.postGetConnectionId(this.getGroupChatSelected).then((response) => {
+        if (response.status == 200) {
+          console.log(response.data); 
+          store.dispatch('videocall/setConnectionId', response.data.connectionId);
+        }
+      }).catch(err => {
+        console.log(err);
+        this.$router.push('/').then(x => window.location.reload());
+      });
+      this.signalingService.onOfferReceived(this.handleOffer);
+      this.signalingService.onAnswerReceived(this.handleAnswer);
+      this.signalingService.onICECandidateReceived(this.handleICECandidate);
+    },
+    methods: {
+      ...mapActions(['sendRequestCalling']),
+      ...mapActions('videocall', ['handleOffer', 'handleAnswer', 'handleICECandidate', 'startCall', 'endCall','beforeDestroy']),
+      handleStartCall() {
+        this.startCall();
+        this.sendRequestCalling();
+      }
+    },
+    beforeDestroy() {
+      this.beforeDestroy();
     },
   };
 </script>
+<style scoped>
+  video {
+    width: 300px;
+    height: 200px;
+  }
+</style>
 <template>
-  <div class=" w-100 h-100" >
-    <div>
-      <div>
-        <video ref="localVideo" autoplay playsinline muted></video>
-        <div v-for="(peer, id) in peers" :key="id">
-          <video :ref="'peerVideo-' + id" autoplay playsinline></video>
-        </div>
+  <div class=" w-100 h-100">
+    <div class=" h-100">
+      <h1>Video Call</h1>
+      <div v-if="this.peerConnection && this.peerConnection.connectionState === 'connected'">
+        <p>Call is active!</p>
       </div>
-      <button @click="startCall">Start Call</button>
+      <div v-if="getCallingFailue">
+        <p>User is offline. You can not call them now!</p>
+      </div>
+      <div v-else>
+        <p>Waiting for connection...</p>
+      </div>
+      <div class="flex flex-column h-100">
+        <div class="flex flex-row w-25 px-4 py-1 justify-content-around align-items-center">
+          <div :class="connectSuccess? 'd-none': 'd-block'">
+            <Button @click="handleStartCall" v-if="isOffer">
+              <i class="pi pi-phone"></i>Accept
+            </Button>
+            <Button @click="handleStartCall" v-else>
+              <i class="pi pi-phone"></i>Start
+            </Button>
+
+          </div>
+          <Button icon="pi pi-power-off" @click="endCall" severity="danger" label="End" />
+        </div>
+        <div class="flex flex-row h-75" >
+          <div class="w-50 h-100 p-3 mb-2 bg-black bg-gradient">
+            <video ref="localVideo" id="localVideo" style="height:100%; width: 100%" autoplay muted></video>
+          </div>
+          <div class="w-50 h-100 p-3 mb-2 bg-black bg-gradient">
+            <video ref="remoteVideo" id="remoteVideo" style="height:100%; width: 100%" autoplay></video>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </template>

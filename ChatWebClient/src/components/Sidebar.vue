@@ -8,21 +8,25 @@ export default {
     name: 'ItemList',
     computed: {
       ...mapState(['groupChatSelected']),
-      ...mapGetters(["getUserId", "getLastestChats"]),
+      ...mapGetters(["getUserId", "getLastestChats",'getListGroup']),
     },
    setup() {
     const store = useStore();
     const items = ref([]); 
     const loading = ref(true); 
-    const error = ref(null); 
+    const error = ref(null);
     const fetchItems = async () => {
       try {
+       
         const response = await UserService.getListGroupChat();
         let data = await response.data;
         
         items.value = response.data;
         for (let i = 0; i < data.length; i++) {
-          store.dispatch("addGroupChat", { groupName: data[i].code });
+          let members = data[i].memeberGroup;
+          let listMem = [];
+          members.forEach(e => { listMem.push(e.userId); });
+          store.dispatch("addGroupChat", { groupName: data[i].code, users: listMem, name: data[i].name});
           if (data[i].chatsSend != null) {
             let chat = { groupId: data[i].grId, text: data[i].chatsSend.textMessage, createdAt: data[i].chatsSend.createdDate, userId: data[i].chatsSend.userId };
             store.dispatch("loadLastesChats", chat);
@@ -39,36 +43,52 @@ export default {
 
     return { items, loading, error };
     },
-    methods: {
-      ...mapActions(['updateGroupChat', "updateChats", "updateGroupChatCode", "loadLastesChats"]),
-      handleChooseGroup(id, code) {
-        ChatService.GetListChats(id);
-        this.updateGroupChatCode(code);
-      },
-      getLastestChatText(groupId) {
-        let chat = Object.assign({},this.getLastestChats.find((x) => x.groupId === groupId));
-        return chat?.text || 'No text available';
-      },
-      getTimeSpanLastestChat( grID) {
-        let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === grID));
-        if (chat != undefined && chat.createdAt != undefined) {
-          let date = new Date(new Date(chat.createdAt).getTime());
-          // Tính chênh lệch thời gian (milliseconds)
-          const differenceInMilliseconds = new Date() - date;
-          // Chuyển đổi milliseconds sang các đơn vị thời gian
-          const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
-          return days > 0 ? days + ' days' : (hours > 0 ? hours + ' hours' : (minutes > 0 ? minutes + ' minutes' : seconds + ' seconds')) + ' ago';
+  methods: {
+    ...mapActions(['updateGroupChat', "updateChats", "updateGroupChatCode", "loadLastesChats"]),
+    handleChooseGroup(id, code) {
+      ChatService.GetListChats(id);
+      this.updateGroupChatCode(code);
+    },
+    getLastestChatText(groupId) {
+      let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === groupId));
+      return chat?.text || 'No text available';
+    },
+    getTimeSpanLastestChat(grID) {
+      let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === grID));
+      if (chat != undefined && chat.createdAt != undefined) {
+        let date = new Date(new Date(chat.createdAt).getTime());
+        // Tính chênh lệch thời gian (milliseconds)
+        const differenceInMilliseconds = new Date() - date;
+        // Chuyển đổi milliseconds sang các đơn vị thời gian
+        const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
+        return days > 0 ? days + ' days' : (hours > 0 ? hours + ' hours' : (minutes > 0 ? minutes + ' minutes' : seconds + ' seconds')) + ' ago';
 
-        }
-      },
-      getNotification(grouId) {
-        let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === grouId));
-        return chat.id != 0 && !chat.isSeen && chat.userId != this.getUserId;
       }
+    },
+    getNotification(grouId) {
+      let chat = Object.assign({}, this.getLastestChats.find((x) => x.groupId === grouId));
+      return chat.id != 0 && !chat.isSeen && chat.userId != this.getUserId;
+    },
+    checkCalling(groupCode) {
+      const group = this.getListGroup.find((g) => g.groupCode === groupCode);
+      return group ? group.isCalling : false;
     }
+   },
+  watch: {
+    getListGroup: {
+      deep: true,
+      handler(newListGroup) {
+        newListGroup.forEach(group => {
+          if (group.isCalling) {
+            console.log(`Group ${group.groupCode} is calling`);
+          }
+        });
+      },
+    },
+  },
 };
 
 </script>
@@ -114,7 +134,8 @@ export default {
                                               <div class="text-lg font-medium mt-2">{{ item.name }}</div>
                                             </div>
                                             <div class="text-left" v-if="item.chatsSend!=null && item.chatsSend.id != 0">
-                                              <span class="fw-normal text-sm">{{ getLastestChatText(item.grId) }}</span>
+                                              <span class="fw-normal text-sm" v-if="!checkCalling(item.code)">{{ getLastestChatText(item.grId) }}</span>
+                                              <span class="fw-normal text-sm text-danger fw-bold" v-else >Calling...</span>
                                             </div>
                                             <div class="text-left" v-if="item.chatsSend==null">
                                               <span class="fw-normal text-sm text-primary">Start the conversation</span>

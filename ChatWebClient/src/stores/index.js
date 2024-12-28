@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 //import websocket from './modules/websocket';
 import * as signalR from '@microsoft/signalr';
 import search from './search';
+import videocall from './videocall';
 export default createStore({
   state: {
     token: localStorage.getItem('token') || null, // JWT Token
@@ -15,7 +16,9 @@ export default createStore({
     messagesSocket: [],
     lastestChats: [],
     requirements: [],
-    notifications: []
+    notifications: [],
+    listGroup: [],
+    callingFailue: false
   },
   mutations: {
     SET_CONNECTION(state, connection) {
@@ -71,6 +74,27 @@ export default createStore({
     },
     loadNotifications(state, noti) {
       state.notifications= noti;
+    },
+    setListGroup(state, group) {
+      let ind = state.listGroup.findIndex(x => x.groupCode == group.groupCode);
+      if(ind == -1) state.listGroup.push(group);
+    },
+    setCalling(state, id) {
+      const group = state.listGroup.find(group => group.users.includes(id));
+      if (group) {
+        group.isCalling = true;
+        console.log(`Group updated:`, group);
+      }
+    },
+    setCalling2(state, code) {
+      const group = state.listGroup.find(group => group.groupCode == code);
+      if (group) {
+        group.isCalling = false;
+        console.log(`Group updated:`, group);
+      }
+    },
+    setCallingFailue(state, status) {
+      state.callingFailue = status
     }
   },
   actions: {
@@ -153,24 +177,32 @@ export default createStore({
           dispatch('search/updateSearchUserCancelRequest', requirements.AssigneeId, { root: true });
         };
       });
+      connection.on("Calling", (obj) => {
+        let requirement = JSON.parse(obj);
+        if (requirement.Type == 3 && requirement.Status) {
+          commit("setCalling", requirement.RequesterId);
+        } else {
+          commit("setCallingFailue", true);
+        }
+      });
       connection.onclose(() => {
         console.log("WebSocket disconnected");
       });
 
       try {
         await connection.start();
-        console.log("WebSocket connected");
         commit("SET_CONNECTION", connection);
       } catch (error) {
         console.error("WebSocket connection failed:", error);
       }
     },
-    addGroupChat({ state }, { groupName }) {
+    addGroupChat({ state, commit }, { groupName , users, name }) {
       if (state.connection) {
         state.connection.invoke("AddToGroup", groupName).catch((err) => {
           console.error("Add to Group Chat Failed:", err);
         });
       }
+      commit("setListGroup", { groupCode: groupName, users: users,groupName: name, isCalling: false });
     },
     sendMessage({ state }, { message, user, group, groupName }) {
       if (state.connection) {
@@ -186,6 +218,13 @@ export default createStore({
       if (state.connection) {
         state.connection.invoke("SendRequest", userId, requirementId).catch((err) => {
           console.error("Send message failed:", err);
+        });
+      }
+    },
+    sendRequestCalling({ state }) {
+      if (state.connection) {
+        state.connection.invoke("SendRequestCalling", state.getGroupChatSelectedCode).catch((err) => {
+          console.error("Send Request Calling Error: " + err);
         });
       }
     },
@@ -233,9 +272,12 @@ export default createStore({
     getLastestChats: (state) => state.lastestChats,
     getRequirements: (state) => state.requirements,
     getNotifications: (state) => state.notifications,
-    getConnection: (state) => state.connection
+    getConnection: (state) => state.connection,
+    getListGroup: (state) => state.listGroup,
+    getCallingFailue: (state) => state.callingFailue
   },
    modules: {
     search, // Đăng ký module search
+    videocall
   },
 })

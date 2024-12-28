@@ -64,9 +64,9 @@
 </script>
 <template>
     <main class="main">
-      <div class="container h-100">
+      <div class="container position-relative h-100">
         <ChatHeader  v-if="getGroupChatSelected !=0 && !isLoading" />
-        <div class="d-flex flex-column h-100 justify-content-center text-center" v-if="getGroupChatSelected ==0 && isLoading">
+        <div class="d-flex flex-column h-100 justify-content-center text-center" v-if="getGroupChatSelected ==0 && isLoading" >
           <div class="mb-6">
             <span class="icon icon-xl text-muted">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -80,7 +80,7 @@
           </div>
         </div>
         <div class="d-flex flex-column h-100 align-items-between"  v-if="!isLoading && getChats">
-          <div class="d-flex flex-column flex-grow-1" style="height: 500px; overflow-y:scroll; overflow-x:hidden">
+          <div class="d-flex flex-column flex-grow-1" style="height: 500px; overflow-y:scroll; overflow-x:hidden; padding-top:60px">
             <DataView :value="getChats">
               <template #list="slotProps">
                   <div class="p-col-12 p-md-2" v-for="(item, index) in slotProps.items" :key="index">

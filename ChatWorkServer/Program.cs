@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(op =>
         {
             var accessToken = context.Request.Query["access_token"];
             if (!string.IsNullOrEmpty(accessToken) &&
-                context.HttpContext.Request.Path.StartsWithSegments("/chatHub"))
+                (context.HttpContext.Request.Path.StartsWithSegments("/chatHub") || context.HttpContext.Request.Path.StartsWithSegments("/videocallhub")))
             {
                 context.Token = accessToken;
             }
@@ -50,10 +50,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR().AddHubOptions<ChatHub>(options =>
+builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
-}); ;
+});
 // Cấu hình dịch vụ CORS
 builder.Services.AddCors(options =>
 {

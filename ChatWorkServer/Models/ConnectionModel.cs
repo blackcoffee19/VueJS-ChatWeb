@@ -7,6 +7,7 @@ namespace ChatWorkServer.Models
         [Key]
         public int Id { get; set; }
         public string ConnectionId { get; set; }
+        public int Type { get; set; }
         public int UserId { get; set; }
         public bool IsOnline { get; set; }  
         public DateTime StartedAt { get; set; }

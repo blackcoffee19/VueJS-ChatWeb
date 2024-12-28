@@ -41,5 +41,8 @@ export default {
   },
   postAddFriendActions(id, isAccept = true) {
     return api.post(`/Users/AddFriendActions?reqId=${id}&actions=${isAccept ? 1 : 0}`);
+  },
+  postGetConnectionId(idGroup) {
+    return api.post(`/Connection/GetUserConnection?id=${idGroup}`);
   }
 }
