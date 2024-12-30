@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<main>
+    <h2>Video Call</h2>
+    <video id="localVideo" autoplay playsinline muted style="width: 300px; border: 1px solid black;"></video>
+    <video id="remoteVideo" autoplay playsinline style="width: 300px; border: 1px solid black;"></video>
+    <button id="startCall">Start Call</button>
+    <button id="endCall">End Call</button>
+
+</main>
+<script>
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    let peerConnection;
+    const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+    // Kết nối SignalR
+    const connection = $.hubConnection();
+    const hub = connection.createHubProxy('videoCallHub');
+
+    // Khi nhận được offer từ người gọi
+    hub.on('ReceiveOffer', (connectionId, offer) => {
+        peerConnection = createPeerConnection(connectionId);
+        peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)));
+        peerConnection.createAnswer().then(answer => {
+            peerConnection.setLocalDescription(answer);
+            hub.invoke('SendAnswer', connectionId, JSON.stringify(answer));
+        });
+    });
+
+    // Khi nhận được answer từ người được gọi
+    hub.on('ReceiveAnswer', (connectionId, answer) => {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answer)));
+    });
+
+    // Khi nhận được ICE Candidate
+    hub.on('ReceiveIceCandidate', (connectionId, candidate) => {
+        peerConnection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)));
+    });
+
+    connection.start().done(() => {
+        $('#startCall').click(() => {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(stream => {
+                    localVideo.srcObject = stream;
+
+                    peerConnection = createPeerConnection(connection.id);
+                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+                    peerConnection.createOffer().then(offer => {
+                        peerConnection.setLocalDescription(offer);
+                        hub.invoke('SendOffer', connection.id, JSON.stringify(offer));
+                    });
+                });
+        });
+
+        $('#endCall').click(() => {
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+        });
+    });
+
+    function createPeerConnection(connectionId) {
+        const pc = new RTCPeerConnection(config);
+        pc.onicecandidate = event => {
+            if (event.candidate) {
+                hub.invoke('SendIceCandidate', connectionId, JSON.stringify(event.candidate));
+            }
+        };
+        pc.ontrack = event => {
+            remoteVideo.srcObject = event.streams[0];
+        };
+        return pc;
+    }
+</script>
