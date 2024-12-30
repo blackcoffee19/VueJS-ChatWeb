@@ -40,6 +40,9 @@ export default {
     addOffer(state, offer) {
       state.listOffer.push(offer);
     },
+    clearOffer(state) {
+      state.listOffer = [];
+    },
     setConnectionId(state, connectionId) {
       state.connectionId = connectionId;
     },
@@ -83,7 +86,7 @@ export default {
       try {
         const offerParse = typeof offer === 'string' ? JSON.parse(offer) : offer;
         const offerDescription = new RTCSessionDescription(offerParse);
-        commit("addOffer", offerParse);
+        //commit("addOffer", offerParse);
         if (!state.peerConnection || state.peerConnection.signalingState === "closed") {
           console.log("Reinitializing PeerConnection...");
           await dispatch("initializePeerConnection");
@@ -141,7 +144,7 @@ export default {
         console.error('Error handling answer:', error);
       }
     },
-    initializePeerConnection({ state, dispatch }) {
+    initializePeerConnection({ state, dispatch, commit }) {
       //      Kết nối nằm trong mạng cục bộ hoặc dùng STUN / TURN 
       //  Nếu cả hai thiết bị nằm trong cùng mạng cục bộ(LAN), trình duyệt có thể tự động kết nối mà không cần nhiều ICE Candidates.
       //  Hoặc STUN / TURN server đã cung cấp đủ thông tin cho kết nối.
@@ -171,6 +174,10 @@ export default {
       // Thêm sự kiện ICE connection state change để theo dõi trạng thái kết nối ICE
       state.peerConnection.addEventListener("iceconnectionstatechange", () => {
         console.log("ICE connection state changed to:", state.peerConnection.iceConnectionState);
+        if (state.peerConnection.iceConnectionState == "disconnected") {
+          commit("setConnectedSuccess", false);
+          commit("setIsOffer", false);
+        }
       });
 
       console.log("PeerConnection initialized.");
@@ -258,13 +265,14 @@ export default {
         state.localStream.getTracks().forEach(track => track.stop());
         commit("setLocalStream", null);
       }
+      commit("clearOffer");
       commit("setRemoteStream", null);
       commit("setIsOffer", false);
       commit("setConnectedSuccess", false);
       commit("setCallingFailue", false, {root: true});
       commit("setCalling2", rootState.getGroupChatSelectedCode, { root: true });
     },
-    beforeDestroy({ state, commit }) {
+    beforeDestroy({ state, commit, rootState }) {
       if (state.peerConnection && state.peerConnection.connectionState !== "closed") {
         state.peerConnection.close();
       }
@@ -273,6 +281,7 @@ export default {
         state.localStream.getTracks().forEach(track => track.stop());
         commit("setLocalStream", null);
       }
+      commit("clearOffer");
       commit("setRemoteStream", null);
       commit("setIsOffer", false);
       commit("setConnectedSuccess", false);

@@ -54,7 +54,7 @@
         this.sendRequestCalling();
       }
     },
-    beforeDestroy() {
+    beforeUnmount() {
       this.beforeDestroy();
     },
   };
