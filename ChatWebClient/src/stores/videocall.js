@@ -196,8 +196,8 @@ export default {
       }
     },
     async startCall({ state, dispatch, rootState, commit }) {
-      console.log("Star call")
-      // Truy cập media của người dùng (camera và microphone)
+      console.log("Start call");
+
       try {
         // Khởi tạo peerConnection nếu cần
         if (!state.peerConnection) {
