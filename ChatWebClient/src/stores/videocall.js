@@ -10,7 +10,9 @@ export default {
     listOffer: [],
     connectionId: null,
     isOffer: false,
-    connectSuccess: false
+    isWaiting: false,
+    connectSuccess: false,
+    isVideoCallView: false
   },
   mutations: {
     SET_CONNECTION(state, connection) {
@@ -51,6 +53,12 @@ export default {
     },
     setConnectedSuccess(state, connect) {
       state.connectSuccess = connect;
+    },
+    setIsVideoCallView(state, status) {
+      state.isVideoCallView = status;
+    },
+    setIsWaiting(state, status) {
+      state.isWaiting = status;
     }
   },
   actions: {
@@ -79,43 +87,53 @@ export default {
     setConnectionId({ commit }, connectionId) {
       commit("setConnectionId", connectionId);  
     },
+    setIsVideoCallView({ commit }, status) {
+      commit("setIsVideoCallView", status);
+    },
+    setIsOffer({ commit }, status) {
+      commit("setIsOffer", status);
+    },
     async addGroupVideo({ state, dispatch }, groupname) {     
       state.signalingService.addGroupVideo(groupname);
     },
     async handleOffer({ state, commit, rootState, dispatch }, offer) {
-      try {
-        const offerParse = typeof offer === 'string' ? JSON.parse(offer) : offer;
-        const offerDescription = new RTCSessionDescription(offerParse);
-        //commit("addOffer", offerParse);
-        if (!state.peerConnection || state.peerConnection.signalingState === "closed") {
-          console.log("Reinitializing PeerConnection...");
-          await dispatch("initializePeerConnection");
-        }
-
-        console.log("Setting remote description...");
-        await state.peerConnection.setRemoteDescription(offerDescription);
-        console.log("Remote description is", state.peerConnection.remoteDescription ? "set" : "not set");//Set đã nhận được kết nối của user kia
-        if (state.peerConnection.remoteDescription) {
-          commit("setIsOffer", true);
-        }
-        // Thêm các ICE Candidate đã lưu
-        if (state.iceCandidates.length > 0) {
-          console.log("Adding stored ICE Candidates...");
-          for (const candidate of state.iceCandidates) {
-            await state.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
-              .catch(error => console.error("Error adding ICE Candidate:", error));
+      if (state.isVideoCallView) {
+        try {
+          const offerParse = typeof offer === 'string' ? JSON.parse(offer) : offer;
+          const offerDescription = new RTCSessionDescription(offerParse);
+          if (!state.peerConnection || state.peerConnection.signalingState === "closed") {
+            console.log("Reinitializing PeerConnection...");
+            await dispatch("initializePeerConnection");
           }
-          commit("clearIceCandidates") // Xóa danh sách sau khi xử lý
+
+          console.log("Setting remote description...");
+          await state.peerConnection.setRemoteDescription(offerDescription);
+          console.log("Remote description is", state.peerConnection.remoteDescription ? "set" : "not set");//Set đã nhận được kết nối của user kia
+          if (state.peerConnection.remoteDescription) {
+            commit("setIsOffer", true);
+          }
+          // Thêm các ICE Candidate đã lưu
+          if (state.iceCandidates.length > 0) {
+            console.log("Adding stored ICE Candidates...");
+            for (const candidate of state.iceCandidates) {
+              await state.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                .catch(error => console.error("Error adding ICE Candidate:", error));
+            }
+            commit("clearIceCandidates") // Xóa danh sách sau khi xử lý
+          }
+
+          // Tạo và gửi answer
+          const answer = await state.peerConnection.createAnswer();
+          await state.peerConnection.setLocalDescription(answer);
+
+          console.log("Sending Answer...");
+          state.signalingService.sendAnswer(answer, state.connectionId);
+        } catch (error) {
+          console.error("Error handling offer:", error);
         }
 
-        // Tạo và gửi answer
-        const answer = await state.peerConnection.createAnswer();
-        await state.peerConnection.setLocalDescription(answer);
-
-        console.log("Sending Answer...");
-        state.signalingService.sendAnswer(answer, state.connectionId);
-      } catch (error) {
-        console.error("Error handling offer:", error);
+      } else {
+        console.log("Handle Offer but this is not Video Call View");
       }
     },
 
@@ -127,13 +145,28 @@ export default {
           console.error("PeerConnection is not initialized.");
           await  dispatch('initializePeerConnection');
         }
-
+        
         const currentState = state.peerConnection.signalingState;
         console.log("Current signaling state:", currentState);
 
-        if (currentState === "have-local-offer") {
+        // Chờ signalingState về 'stable' nếu không ở trạng thái hợp lệ
+        if (!["stable", "have-local-offer"].includes(currentState)) {
+          console.log("Waiting for signaling state to stabilize...");
+          await new Promise(resolve => {
+            const listener = () => {
+              if (state.peerConnection.signalingState === "stable" ||
+                state.peerConnection.signalingState === "have-local-offer") {
+                state.peerConnection.removeEventListener("signalingstatechange", listener);
+                resolve();
+              }
+            };
+            state.peerConnection.addEventListener("signalingstatechange", listener);
+          });
+        }
+        if (currentState === "have-local-offer"  ) {
           await state.peerConnection.setRemoteDescription(new RTCSessionDescription(parsedAnswer));
           commit("setConnectedSuccess", true);
+          commit("setIsWaiting", false);
           console.log("Answer successfully set as RemoteDescription."); //Kết nối 2 stream hoàn thành
         } else {
           console.error(
@@ -170,13 +203,13 @@ export default {
       state.peerConnection.addEventListener("signalingstatechange", () => {
         console.log("Signaling state changed to:", state.peerConnection.signalingState);
       });
-
       // Thêm sự kiện ICE connection state change để theo dõi trạng thái kết nối ICE
       state.peerConnection.addEventListener("iceconnectionstatechange", () => {
         console.log("ICE connection state changed to:", state.peerConnection.iceConnectionState);
         if (state.peerConnection.iceConnectionState == "disconnected") {
           commit("setConnectedSuccess", false);
           commit("setIsOffer", false);
+          commit("setRemoteStream", null);
         }
       });
 
@@ -204,11 +237,12 @@ export default {
     },
     async startCall({ state, dispatch, rootState, commit }) {
       console.log("Start call");
-
+      commit("setIsWaiting", true);
       try {
         // Khởi tạo peerConnection nếu cần
-        if (!state.peerConnection) {
-          await dispatch('initializePeerConnection');
+        if (!state.peerConnection || state.peerConnection.connectionState === "closed") {
+          console.log("Initializing PeerConnection...");
+          await dispatch("initializePeerConnection");
         }
         const videoElement = document.createElement('video');
         videoElement.src = '/videos/hinata-la.mp4';
@@ -265,7 +299,7 @@ export default {
         state.localStream.getTracks().forEach(track => track.stop());
         commit("setLocalStream", null);
       }
-      commit("clearOffer");
+      //commit("clearOffer");
       commit("setRemoteStream", null);
       commit("setIsOffer", false);
       commit("setConnectedSuccess", false);
@@ -273,18 +307,17 @@ export default {
       commit("setCalling2", rootState.getGroupChatSelectedCode, { root: true });
     },
     beforeDestroy({ state, commit, rootState }) {
-      if (state.peerConnection && state.peerConnection.connectionState !== "closed") {
+      if (state.peerConnection ) {
         state.peerConnection.close();
+        commit("setPeerConnection", null); // Đảm bảo peerConnection được reset
       }
-      // Đóng peer connection và reset streams
       if (state.localStream) {
         state.localStream.getTracks().forEach(track => track.stop());
         commit("setLocalStream", null);
       }
-      commit("clearOffer");
       commit("setRemoteStream", null);
-      commit("setIsOffer", false);
       commit("setConnectedSuccess", false);
+
       commit("setCallingFailue", false, { root: true });
       commit("setCalling2", rootState.getGroupChatSelectedCode, { root: true });
     },
@@ -310,7 +343,8 @@ export default {
     getPeerConnection: (state) => state.peerConnection,
     getIceCandidates: (state) => state.iceCandidates,
     getListOffer: (state) => state.listOffer,
-    getIsOffer: (state) => state.isOffer
+    getIsOffer: (state) => state.isOffer,
+    getIsWaiting: (state) => state.isWaiting
   }
 
   

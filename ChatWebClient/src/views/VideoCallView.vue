@@ -8,8 +8,8 @@
      Button
     },
     computed: {
-      ...mapGetters(['getGroupChatSelected','getCallingFailue']),
-      ...mapState('videocall', ['peerConnection', 'localStream', 'remoteStream', 'signalingService', 'isOffer', 'connectSuccess','listOffer']),
+      ...mapGetters(['getGroupChatSelected', 'getCallingFailue']),
+      ...mapState('videocall', ['peerConnection', 'localStream', 'remoteStream', 'signalingService', 'isOffer', 'connectSuccess', 'listOffer','isWaiting']),
     },
     watch: {
       // Khi stream thay đổi, cập nhật video element
@@ -27,6 +27,7 @@
       }
     },
     mounted() {
+      this.setIsVideoCallView(true);
       UserService.postGetConnectionId(this.getGroupChatSelected).then((response) => {
         if (response.status == 200) {
           store.dispatch('videocall/setConnectionId', response.data.connectionId);
@@ -37,10 +38,8 @@
       });
       let listOfferRecived = Object.assign([], this.listOffer);
       if (listOfferRecived.length > 0) {
-        for (let i = 0; i < listOfferRecived.length; i++) {
-          let offer = Object.assign({}, listOfferRecived[i]);
-          this.handleOffer(offer);
-        }
+        let offer = Object.assign({}, listOfferRecived[listOfferRecived.length-1]);
+        this.handleOffer(offer);
       }
       this.signalingService.onOfferReceived(this.handleOffer);
       this.signalingService.onAnswerReceived(this.handleAnswer);
@@ -48,7 +47,7 @@
     },
     methods: {
       ...mapActions(['sendRequestCalling']),
-      ...mapActions('videocall', ['handleOffer', 'handleAnswer', 'handleICECandidate', 'startCall', 'endCall','beforeDestroy']),
+      ...mapActions('videocall', ['handleOffer', 'handleAnswer', 'handleICECandidate', 'startCall', 'endCall', 'beforeDestroy', 'setIsVideoCallView','setIsOffer']),
       handleStartCall() {
         this.startCall();
         this.sendRequestCalling();
@@ -56,6 +55,8 @@
     },
     beforeUnmount() {
       this.beforeDestroy();
+      this.setIsVideoCallView(false);
+      this.setIsOffer(false);
     },
   };
 </script>
@@ -82,10 +83,13 @@
       <div class="flex flex-column h-100">
         <div class="flex flex-row w-25 px-4 py-1 justify-content-around align-items-center">
           <div :class="connectSuccess? 'd-none': 'd-block'">
-            <Button @click="handleStartCall" v-if="isOffer">
+            <Button @click="handleStartCall" v-if="isOffer && !isWaiting">
               <i class="pi pi-phone"></i>Accept
             </Button>
-            <Button @click="handleStartCall" v-else>
+            <Button v-if="isWaiting" severity="warning">
+              Calling...
+            </Button>
+            <Button @click="handleStartCall" v-if="!isOffer && !isWaiting">
               <i class="pi pi-phone"></i>Start
             </Button>
 
