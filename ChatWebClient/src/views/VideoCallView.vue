@@ -9,7 +9,7 @@
     },
     computed: {
       ...mapGetters(['getGroupChatSelected','getCallingFailue']),
-      ...mapState('videocall', ['peerConnection', 'localStream', 'remoteStream', 'signalingService', 'isOffer','connectSuccess']),
+      ...mapState('videocall', ['peerConnection', 'localStream', 'remoteStream', 'signalingService', 'isOffer', 'connectSuccess','listOffer']),
     },
     watch: {
       // Khi stream thay đổi, cập nhật video element
@@ -35,6 +35,13 @@
         console.log(err);
         this.$router.push('/').then(x => window.location.reload());
       });
+      let listOfferRecived = Object.assign([], this.listOffer);
+      if (listOfferRecived.length > 0) {
+        for (let i = 0; i < listOfferRecived.length; i++) {
+          let offer = Object.assign({}, listOfferRecived[i]);
+          this.handleOffer(offer);
+        }
+      }
       this.signalingService.onOfferReceived(this.handleOffer);
       this.signalingService.onAnswerReceived(this.handleAnswer);
       this.signalingService.onICECandidateReceived(this.handleICECandidate);

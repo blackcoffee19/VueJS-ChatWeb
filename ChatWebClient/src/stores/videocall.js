@@ -230,7 +230,7 @@ export default {
         const offer = await state.peerConnection.createOffer();
         await state.peerConnection.setLocalDescription(offer);
 
-        if (state.connectionId == null || state.connectionId == 0) {
+        if (state.connectionId == null || state.connectionId == 0 || state.connectionId == "") {
           this.$router.push('/')
         }
 
