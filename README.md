@@ -1,1 +1,1 @@
-Hãy đọc file doc để xem mẫu và hướng dẫn
+Nên đọc file .docx để xem mẫu và hướng dẫn
