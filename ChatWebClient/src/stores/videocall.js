@@ -142,6 +142,9 @@ export default {
       }
     },
     initializePeerConnection({ state, dispatch }) {
+      //      Kết nối nằm trong mạng cục bộ hoặc dùng STUN / TURN 
+      //  Nếu cả hai thiết bị nằm trong cùng mạng cục bộ(LAN), trình duyệt có thể tự động kết nối mà không cần nhiều ICE Candidates.
+      //  Hoặc STUN / TURN server đã cung cấp đủ thông tin cho kết nối.
       const configuration = {
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' }, // Thay bằng STUN server phù hợp
@@ -209,24 +212,39 @@ export default {
           audio: true,
         }).catch(() => videoElement.captureStream());
         commit("setLocalStream", stream); // Lưu stream vào state
-        // Thêm track vào peerConnection
+       
         if (!state.peerConnection || state.peerConnection.signalingState === "closed") {
           console.log("Reinitializing PeerConnection...");
           await dispatch("initializePeerConnection");
         }
 
+        //Thêm các track (dữ liệu phương tiện như audio hoặc video) từ luồng phương tiện cục bộ (state.localStream) vào kết nối peerConnection
+        //Mục đích:
+        //  _ Trình duyệt sẽ tự động thiết lập các kênh truyền thông (RTP) để gửi các track này đến peer (thiết bị từ xa) qua mạng.
+        //  _ Đầu xa(remote peer) có thể nhận các track đó và hiển thị video hoặc phát âm thanh.
         state.localStream.getTracks().forEach(track => {
           state.peerConnection.addTrack(track, state.localStream);
         });
-        // Tạo offer
+
+        // Tạo Offer
         const offer = await state.peerConnection.createOffer();
         await state.peerConnection.setLocalDescription(offer);
 
-        // Gửi offer tới server signaling (ASP.NET Web API)
-        if (rootState.getGroupChatSelectedCode == null || rootState.getGroupChatSelectedCode == "") {
+        if (state.connectionId == null || state.connectionId == 0) {
           this.$router.push('/')
         }
+
+        // Gửi offer tới server signaling 
         state.signalingService.sendOffer(offer, state.connectionId);
+
+        //Kiểm tra icecandidate có được gửi chưa
+        //state.peerConnection.onicecandidate = (event) => {
+        //  if (event.candidate) {
+        //    console.log('ICE Candidate:', event.candidate);
+        //  } else {
+        //    console.log('All ICE Candidates have been sent');
+        //  }
+        //};
       } catch (error) {
         console.error('Lỗi khi bắt đầu cuộc gọi:', error);
       }
@@ -262,16 +280,14 @@ export default {
       commit("setCalling2", rootState.getGroupChatSelectedCode, { root: true });
     },
     handleICECandidateEvent({ state, rootState }, event) {
-      console.log("handleICECandidateEvent", event);  // Log the event object
       if (event.candidate && this.getGroupChatSelectedCode != null) {
+        console.log("Send ICE Candidate ",event);
         state.signalingService.sendICECandidate(event.candidate, rootState.getGroupChatSelectedCode);
       }
     },
 
     handleTrackEvent({ state, commit },event) {
-      console.log("Track added to remote stream:", event.track);
       if (event.streams && event.streams[0]) {
-        console.log("Remote stream found:", event.streams[0]);
         commit("setRemoteStream", event.streams[0]);
       } else {
         console.error("No remote stream available in event.");

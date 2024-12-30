@@ -54,8 +54,8 @@ import router from '@/router';
     },
     methods: {
       logout()  {
-        stores.dispatch("logout"); // Gọi action logout
-        router.push("/login");   // Chuyển hướng
+        stores.dispatch("logout"); 
+        router.push("/login");   
       }
     }
 

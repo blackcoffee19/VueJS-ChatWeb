@@ -28,6 +28,7 @@ export default class SignalingService {
   }
 
   sendICECandidate(candidate, targetConnection) {
+    console.log("sendICECandidate " + candidate);
     this.connection.invoke("SendICECandidate", JSON.stringify(candidate), targetConnection);
   }
 

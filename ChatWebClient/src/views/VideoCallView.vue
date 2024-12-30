@@ -15,14 +15,12 @@
       // Khi stream thay đổi, cập nhật video element
       localStream(newStream) {
         console.log("LocalStream set");
-        console.log(newStream)
         if (this.$refs.localVideo) {
           this.$refs.localVideo.srcObject = newStream;
         }
       },
       remoteStream(newStream) {
         console.log("RemoteStream set");
-        console.log(newStream)
         if (this.$refs.remoteVideo) {
           this.$refs.remoteVideo.srcObject = newStream;
         }
@@ -31,7 +29,6 @@
     mounted() {
       UserService.postGetConnectionId(this.getGroupChatSelected).then((response) => {
         if (response.status == 200) {
-          console.log(response.data); 
           store.dispatch('videocall/setConnectionId', response.data.connectionId);
         }
       }).catch(err => {
@@ -65,14 +62,15 @@
   <div class=" w-100 h-100">
     <div class=" h-100">
       <h1>Video Call</h1>
-      <div v-if="this.peerConnection && this.peerConnection.connectionState === 'connected'">
+      <!--<div v-if="this.peerConnection && this.peerConnection.connectionState === 'connected'">
         <p>Call is active!</p>
-      </div>
-      <div v-if="getCallingFailue">
-        <p>User is offline. You can not call them now!</p>
       </div>
       <div v-else>
         <p>Waiting for connection...</p>
+      </div>
+      <div v-if="this.peerConnection">this.peerConnection.connectionState</div>-->
+      <div v-if="getCallingFailue">
+        <p>User is offline. You can not call them now!</p>
       </div>
       <div class="flex flex-column h-100">
         <div class="flex flex-row w-25 px-4 py-1 justify-content-around align-items-center">
@@ -87,7 +85,7 @@
           </div>
           <Button icon="pi pi-power-off" @click="endCall" severity="danger" label="End" />
         </div>
-        <div class="flex flex-row h-75" >
+        <div class="flex flex-row h-75">
           <div class="w-50 h-100 p-3 mb-2 bg-black bg-gradient">
             <video ref="localVideo" id="localVideo" style="height:100%; width: 100%" autoplay muted></video>
           </div>

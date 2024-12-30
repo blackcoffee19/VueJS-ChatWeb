@@ -20,8 +20,6 @@
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.5",
-    "simple-peer": "^9.11.1",
-    "socket.io-client": "^4.8.1",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5",
     "vuex": "^4.1.0"

@@ -25,14 +25,14 @@
 </script>
 <template>
   <div class="shadow mb-3 px-4 pt-2 position-fixed top-0 z-1" style="height: 60px; width: -webkit-fill-available">
-    <div class="flex flex-row">
-      <div class="flex-grow-1 fw-bold fs-4 font-monospace ps-5 pt-1">
+    <div class="flex flex-row px-5 ">
+      <div class="flex-grow-1 fw-bold fs-4 font-monospace pt-1">
         {{getGroupChatName()}}
       </div>
-      <div>
+      <div >
         <router-link to="/videocall" >
           <a>
-            <span class="pi  pi-video" style="font-size: 30px;"></span>
+            <span class="pi pi-video" style="font-size: 30px;"></span>
           </a>
          </router-link>
       </div>

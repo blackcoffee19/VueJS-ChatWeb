@@ -37,10 +37,10 @@ namespace ChatWorkServer.Models.Data
                 new MemeberGroupModel(8, 7, 4, DateTime.Now)
             );
             builder.Entity<ChatModel>().HasData(
-                new ChatModel(1, "Hi Hi-chan <3", 3, 1, true),
+                new ChatModel(1, "Hi Hi-chan", 3, 1, true),
                 new ChatModel(2, "Hi Juria", 2, 1, true),
-                new ChatModel(3, "I miss you ;o;", 3, 1, false),
-                new ChatModel(4, "Have time Hi-chan?", 7, 2, false),
+                new ChatModel(3, "Good morning ;o;", 3, 1, false),
+                new ChatModel(4, "Are you free Hina?", 7, 2, false),
                 new ChatModel(5, "Hang out Juria? I'll ask Hinata too", 7, 4, false)
                 );
         }

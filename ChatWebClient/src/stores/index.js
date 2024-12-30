@@ -83,14 +83,12 @@ export default createStore({
       const group = state.listGroup.find(group => group.users.includes(id));
       if (group) {
         group.isCalling = true;
-        console.log(`Group updated:`, group);
       }
     },
     setCalling2(state, code) {
       const group = state.listGroup.find(group => group.groupCode == code);
       if (group) {
         group.isCalling = false;
-        console.log(`Group updated:`, group);
       }
     },
     setCallingFailue(state, status) {

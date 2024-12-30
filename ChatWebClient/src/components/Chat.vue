@@ -80,7 +80,7 @@
           </div>
         </div>
         <div class="d-flex flex-column h-100 align-items-between"  v-if="!isLoading && getChats">
-          <div class="d-flex flex-column flex-grow-1" style="height: 500px; overflow-y:scroll; overflow-x:hidden; padding-top:60px">
+          <div class="d-flex flex-column flex-grow-1" style="height: 500px; overflow-y:auto; overflow-x:hidden; padding-top:60px">
             <DataView :value="getChats">
               <template #list="slotProps">
                   <div class="p-col-12 p-md-2" v-for="(item, index) in slotProps.items" :key="index">
