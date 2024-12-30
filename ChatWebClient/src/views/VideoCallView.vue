@@ -86,7 +86,7 @@
             <Button @click="handleStartCall" v-if="isOffer && !isWaiting">
               <i class="pi pi-phone"></i>Accept
             </Button>
-            <Button v-if="isWaiting" severity="warning">
+            <Button v-if="isWaiting" severity="warn">
               Calling...
             </Button>
             <Button @click="handleStartCall" v-if="!isOffer && !isWaiting">
