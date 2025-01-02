@@ -118,6 +118,11 @@ export default {
                             <!-- Chats -->
                             
                             <DataView :value="items" layout="list">
+                              <template #emptyMessage>
+                                  <div class="empty-container">
+                                    <p>Không có dữ liệu để hiển thị</p>
+                                  </div>
+                                </template>
                                 <template #list="slotProps">
                                     <div class="p-col-12"  v-for="(item, index) in slotProps.items" :key="index">
                                       <div class="mb-2 card position-relative" @click="handleChooseGroup(item.grId, item.code)">

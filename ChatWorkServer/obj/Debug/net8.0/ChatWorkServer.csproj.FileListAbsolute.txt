@@ -546,7 +546,6 @@ D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\staticwebassets\msb
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.ChatWorkServer.props
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.ChatWorkServer.props
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\staticwebassets.pack.json
-D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\ChatWork.0F028852.Up2Date
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\ChatWorkServer.dll
 D:\TestingArea\VueJS-ChatWeb\ChatWorkServer\obj\Debug\net8.0\refint\ChatWorkServer.dll

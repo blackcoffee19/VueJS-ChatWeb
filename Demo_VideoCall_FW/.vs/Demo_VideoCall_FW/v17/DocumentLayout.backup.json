@@ -1,33 +1,33 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\TestingArea\\Demo_VideoCall_FW\\",
+  "WorkspaceRootPath": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\vuejs-chatweb\\demo_videocall_fw\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\models\\videocallhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\models\\videocallhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:models\\videocallhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|d:\\testingarea\\demo_videocall_fw\\global.asax||{4D30FDB3-AB3E-4810-B6F2-64627BCCA384}",
+      "AbsoluteMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\global.asax||{4D30FDB3-AB3E-4810-B6F2-64627BCCA384}",
       "RelativeMoniker": "D:0:0:{582DC9CA-8F82-4D3D-9E68-42475D0FE213}|Demo_VideoCall_FW.csproj|solutionrelative:global.asax||{4D30FDB3-AB3E-4810-B6F2-64627BCCA384}"
     }
   ],
@@ -38,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 1027,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,26 +46,25 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-29T03:45:07.43Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-29T03:45:07.43Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\Views\\Home\\Index.cshtml",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE4AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-12-29T03:14:43.966Z",
               "EditorCaption": ""
@@ -74,61 +73,57 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "Startup.cs",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\Startup.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Startup.cs",
               "RelativeDocumentMoniker": "Startup.cs",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\Startup.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Startup.cs",
               "RelativeToolTip": "Startup.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-29T03:12:45.007Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-29T03:12:45.007Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "Global.asax",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\Global.asax",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Global.asax",
               "RelativeDocumentMoniker": "Global.asax",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\Global.asax",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Global.asax",
               "RelativeToolTip": "Global.asax",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000179|",
-              "WhenOpened": "2024-12-29T03:07:26.169Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-29T03:07:26.169Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "VideoCallHub.cs",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\Models\\VideoCallHub.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Models\\VideoCallHub.cs",
               "RelativeDocumentMoniker": "Models\\VideoCallHub.cs",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\Models\\VideoCallHub.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Models\\VideoCallHub.cs",
               "RelativeToolTip": "Models\\VideoCallHub.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-29T03:05:59.887Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-29T03:05:59.887Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "RouteConfig.cs",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\App_Start\\RouteConfig.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\App_Start\\RouteConfig.cs",
               "RelativeDocumentMoniker": "App_Start\\RouteConfig.cs",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\App_Start\\RouteConfig.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\App_Start\\RouteConfig.cs",
               "RelativeToolTip": "App_Start\\RouteConfig.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAAwBMAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-29T02:57:43.622Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-29T02:57:43.622Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Web.config",
-              "DocumentMoniker": "D:\\TestingArea\\Demo_VideoCall_FW\\Web.config",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Web.config",
               "RelativeDocumentMoniker": "Web.config",
-              "ToolTip": "D:\\TestingArea\\Demo_VideoCall_FW\\Web.config",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\Demo_VideoCall_FW\\Web.config",
               "RelativeToolTip": "Web.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",

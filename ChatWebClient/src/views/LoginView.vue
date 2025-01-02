@@ -1,51 +1,92 @@
-<script setup lang="js">
+<script lang="js">
 import axios from 'axios';
+import AuthService from '@/services/auth';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
-import { ref } from 'vue';
-const activeBtn = ref(false);
-function register(){
-    activeBtn.value=!activeBtn.value;
-}
-
-</script>
-<script lang="js">
-import '../assets/login.css'
 import Password from 'primevue/password';
+import { ref } from 'vue';
+import '../assets/login.css';
+import { mapActions, mapState, mapGetters } from 'vuex';
 export default {
-    data(){
-        return {
-            username: "",
-            password: ""
-        }
+    components:{
+        FloatLabel,
+        InputText,
+        Password
+    },
+    computed: {
+        ...mapState('login', ['username','password','fullname']),
+        ...mapGetters('login',['getActiveBtn','getError','getMessage'])
+    },
+    mounted() {
+        const container = document.getElementById('container');
+        const registerBtn = document.getElementById('register');
+        const loginBtn = document.getElementById('login');
+
+        registerBtn.addEventListener('click', () => {
+            container.classList.add("active");
+        });
+
+        loginBtn.addEventListener('click', () => {
+            container.classList.remove("active");
+        });
+
     },
     methods: {
+        ...mapActions('login', ['toggleActive','setMessage','setError','setUsername','setPassword','setFullname']),
     async onLogin() {
-      try {
-        const response = await axios.post("https://localhost:7223/api/Auth/login", {
-          username: this.username,
-          password: this.password,
+        await AuthService.login({
+            username: this.username,
+            password: this.password,
+        }).then(response => {
+            const token = response.data.token;
+            const user = { id: response.data.userId, username: this.username }; 
+            this.$store.dispatch("login", { token, user });
+            this.setError(false);
+            this.setMessage("");
+            this.$router.push( "/").then( x => window.location.reload());
+            
+        }).catch(err => {
+            if(err.response.status == 401){
+                this.setError(true);
+                this.setMessage("Username or password incorrect");
+            }else{
+                this.setError(true);
+                this.setMessage("Can not connect to server now");
+            }
         });
-        const token = response.data.token; // JWT Token từ API
-        const user = { id: response.data.userId, username: this.username }; // User info
-        // Gọi action login từ Vuex store
-        this.$store.dispatch("login", { token, user });
-
-        // Chuyển hướng sau khi login thành công
-        this.$router.push( "/").then( x => window.location.reload());
-      } catch (error) {
-        console.error("Login failed:", error);
-      }
     },
+    async onRegister() {
+        await AuthService.register({
+            username: this.username,
+            password: this.password,
+            fullname: this.fullname
+        }).then(response => {
+            const token = response.data.token;
+            const user = { id: response.data.userId, username: this.username }; 
+            this.$store.dispatch("login", { token, user });
+            this.setError(false);
+            this.setMessage("");
+            this.$router.push( "/").then( x => window.location.reload());
+            
+        }).catch(err => {
+            if(err.response.status == 400){
+                this.setError(true);
+                this.setMessage("Can not register. Choose another username");
+            }else{
+                this.setError(true);
+                this.setMessage("Can not connect to server now");
+            }
+        });
+    }
   },
 }
 </script>
 
 <template>
     <div class="login-body">
-        <div class="container" id="container" :class="{ active: activeBtn}">
+        <div class="container" id="container" :class="{ active: getActiveBtn}">
             <div class="form-container sign-up" >
-                <form>
+                <form @submit.prevent="onRegister">
                     <h1>Create Account</h1>
                     <div class="social-icons ">
                         <a href="#" class="icon">
@@ -61,24 +102,25 @@ export default {
                             <i class="pi pi-twitter"></i>
                         </a>
                     </div>
-                    <span>or use your email for registeration</span>
-                    <div>
-                        <FloatLabel>
-                            <InputText id="username2"  />
+                    <div v-if="getError" class="text-danger">
+                        {{ getMessage }}
+                    </div>
+                    <div class="mt-5">
+                        <FloatLabel  class="mb-3">
+                            <InputText id="username2" @input="setUsername" />
                             <label for="username2">Username</label>
                         </FloatLabel>
-                        <FloatLabel>
-                            <InputText id="email2"  />
-                            <label for="email2">Email</label>
+                        <FloatLabel class="mb-3">
+                            <InputText id="fullname" @input="setFullname" />
+                            <label for="fullname">Fullname</label>
                         </FloatLabel>
-                        <FloatLabel>
-                            <Password id="password2" v-model="password" />
+                        <FloatLabel  class="mb-3">
+                            <Password id="password2" @input="setPassword" />
                             <label for="password2">Password</label>
                         </FloatLabel>
                     </div>
                     <button>Sign Up</button>
                 </form>
-    
             </div>
             <div class="form-container sign-in">
                 <form @submit.prevent="onLogin">
@@ -97,19 +139,21 @@ export default {
                             <i class="pi pi-twitter"></i>
                         </a>
                     </div>
-                    <span>or use your username for registeration</span>
-                    <div>
-                        <FloatLabel>
-                            <InputText id="username" v-model="username"  />
+                    <div v-if="getError" class="text-danger">
+                        {{ getMessage }}
+                    </div>
+                    <div class="mt-5">
+                        <FloatLabel class="mb-3">
+                            <InputText id="username" @input="setUsername" />
                             <label for="username">Username</label>
                         </FloatLabel>
-                        <FloatLabel>
-                            <Password id="password" v-model="password" />
+                        <FloatLabel class="mb-1">
+                            <Password id="password" @input="setPassword"  />
                             <label for="password">Password</label>
                         </FloatLabel>
                     </div>
                     <a class="#">Forget Your Password</a>
-                    <button>Sign Up</button>
+                    <button>Sign In</button>
                 </form>
     
             </div>
@@ -118,12 +162,12 @@ export default {
                     <div class="toggle-panel toggle-left">
                         <h1 style="color: #FFF;">Welcome Back!</h1>
                         <p>Enter your personal details to use all of site features </p>
-                        <button class="hidden" id="login" @click="register">Sign In</button>
+                        <button :class="!getActiveBtn? 'hidden': ''"  id="login" @click="toggleActive">Sign In</button>
                     </div>
                     <div class="toggle-panel toggle-right">
                         <h1 style="color: #FFF;">Hello, Friend!</h1>
                         <p>Register with your details to use all of site features </p>
-                        <button class="hidden" id="register"  @click="register">Sign Up</button>
+                        <button :class="getActiveBtn? 'hidden':'' "  id="register"  @click="toggleActive">Sign Up</button>
                     </div>
                 </div>
             </div>

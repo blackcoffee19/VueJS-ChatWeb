@@ -70,13 +70,6 @@
   <div class=" w-100 h-100">
     <div class=" h-100">
       <h1>Video Call</h1>
-      <!--<div v-if="this.peerConnection && this.peerConnection.connectionState === 'connected'">
-        <p>Call is active!</p>
-      </div>
-      <div v-else>
-        <p>Waiting for connection...</p>
-      </div>
-      <div v-if="this.peerConnection">this.peerConnection.connectionState</div>-->
       <div v-if="getCallingFailue">
         <p>User is offline. You can not call them now!</p>
       </div>

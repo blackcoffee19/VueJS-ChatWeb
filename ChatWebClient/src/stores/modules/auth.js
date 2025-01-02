@@ -1,4 +1,4 @@
-import AuthService from "../../services/modules/auth";
+import AuthService from "../../services/auth";
 
 const state = {};
 const getters = {};

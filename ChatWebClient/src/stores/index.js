@@ -3,6 +3,7 @@ import { createStore } from 'vuex';
 import * as signalR from '@microsoft/signalr';
 import search from './search';
 import videocall from './videocall';
+import login from './login';
 export default createStore({
   state: {
     token: localStorage.getItem('token') || null, // JWT Token
@@ -276,6 +277,7 @@ export default createStore({
   },
    modules: {
     search, // Đăng ký module search
-    videocall
+    videocall,
+    login
   },
 })
