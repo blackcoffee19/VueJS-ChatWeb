@@ -7,7 +7,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbContextConnection") ?? throw new InvalidOperationException("Connection string 'AppDbContextConnection' not found.");
-
+builder.WebHost.UseKestrel()
+               .UseUrls("http://0.0.0.0:7223"); // Lắng nghe mọi IP
 builder.Services.AddDbContext<ChatDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddAuthentication(op =>
@@ -57,13 +58,18 @@ builder.Services.AddSignalR(options =>
 // Cấu hình dịch vụ CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", builder =>
+    options.AddPolicy("SpecificOrigins", builder =>
+    {
+        builder.WithOrigins("http://localhost:43696") // Thay bằng URL client
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials(); // Cho phép WebSocket;
+    });
+    options.AddPolicy("PublicApi", builder =>
     {
         builder.AllowAnyOrigin()
                .AllowAnyMethod()
-               .AllowAnyHeader()
-               .WithOrigins("http://localhost:43696") // Thay bằng URL client
-               .AllowCredentials(); // Cho phép WebSocket;
+               .AllowAnyHeader(); // Không yêu cầu AllowCredentials
     });
 });
 var app = builder.Build();
@@ -84,7 +90,7 @@ else
     app.UseHsts();
 }
 // Sử dụng CORS middleware
-app.UseCors("AllowAllOrigins");
+app.UseCors("SpecificOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

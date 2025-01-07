@@ -3,6 +3,41 @@
   "WorkspaceRootPath": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|d:\\testingarea\\vuejs-chatweb\\chatworkserver\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|d:\\testingarea\\vuejs-chatweb\\chatworkserver\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|d:\\testingarea\\vuejs-chatweb\\chatworkserver\\models\\chatdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|solutionrelative:models\\chatdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\services\\auth.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\stores\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\stores\\login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\services\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\stores\\modules\\auth.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|d:\\testingarea\\vuejs-chatweb\\chatworkserver\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|d:\\testingarea\\vuejs-chatweb\\chatworkserver\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|solutionrelative:controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\vite.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
@@ -16,9 +51,6 @@
     },
     {
       "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\layouts\\homelayout.vue||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BCD15-3FFD-4146-BA32-3E2FB96DE98C}|..\\ChatWebClient\\chatwebclient.esproj|d:\\testingarea\\vuejs-chatweb\\chatwebclient\\src\\stores\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EE5755B5-0A81-40F9-86B4-E4530A7A7256}|ChatWorkServer.csproj|d:\\testingarea\\vuejs-chatweb\\chatworkserver\\services\\videocallhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,24 +71,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 1027,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "index.js",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\index.js",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\stores\\index.js",
               "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\index.js",
               "RelativeToolTip": "..\\ChatWebClient\\src\\stores\\index.js",
-              "ViewState": "AgIAALgAAAAAAAAAAAAAAMUAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAALgAAAAAAAAAAAAAAMkAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2024-12-27T03:56:47.681Z",
               "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 12,
               "Title": "videocall.js",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\videocall.js",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\stores\\videocall.js",
@@ -69,7 +101,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 13,
               "Title": "SignalingService.js",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\services\\SignalingService.js",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\services\\SignalingService.js",
@@ -82,7 +114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 11,
               "Title": "VideoCallView.vue",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\views\\VideoCallView.vue",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\views\\VideoCallView.vue",
@@ -95,7 +127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "VideoCallHub.cs",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Services\\VideoCallHub.cs",
               "RelativeDocumentMoniker": "Services\\VideoCallHub.cs",
@@ -112,20 +144,128 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-06T12:35:39.506Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ChatDbContext.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Models\\ChatDbContext.cs",
+              "RelativeDocumentMoniker": "Models\\ChatDbContext.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Models\\ChatDbContext.cs",
+              "RelativeToolTip": "Models\\ChatDbContext.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAywBcAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-06T09:10:48.286Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAUwFoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-06T08:52:58.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "login.js",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\login.js",
+              "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\stores\\login.js",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\login.js",
+              "RelativeToolTip": "..\\ChatWebClient\\src\\stores\\login.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-01-06T07:42:55.109Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "index.js",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\services\\index.js",
+              "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\services\\index.js",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\services\\index.js",
+              "RelativeToolTip": "..\\ChatWebClient\\src\\services\\index.js",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-01-06T07:42:36.526Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "auth.js",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\services\\auth.js",
+              "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\services\\auth.js",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\services\\auth.js",
+              "RelativeToolTip": "..\\ChatWebClient\\src\\services\\auth.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-01-06T07:41:30.233Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "auth.js",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\modules\\auth.js",
+              "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\stores\\modules\\auth.js",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\stores\\modules\\auth.js",
+              "RelativeToolTip": "..\\ChatWebClient\\src\\stores\\modules\\auth.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-01-06T07:41:21.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAADwvxcAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-31T09:05:09.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UsersController.cs",
+              "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "Controllers\\UsersController.cs",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAkwBkAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-31T09:04:09.151Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "vite.config.js",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\vite.config.js",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\vite.config.js",
               "ToolTip": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\vite.config.js",
               "RelativeToolTip": "..\\ChatWebClient\\vite.config.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-12-30T09:38:41.019Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-30T09:38:41.019Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 14,
               "Title": "HomeLayout.vue",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\layouts\\HomeLayout.vue",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\layouts\\HomeLayout.vue",
@@ -137,7 +277,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
               "Title": "Sidebar.vue",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWebClient\\src\\components\\Sidebar.vue",
               "RelativeDocumentMoniker": "..\\ChatWebClient\\src\\components\\Sidebar.vue",
@@ -149,7 +289,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 17,
               "Title": "ChatHub.cs",
               "DocumentMoniker": "D:\\TestingArea\\VueJS-ChatWeb\\ChatWorkServer\\Services\\ChatHub.cs",
               "RelativeDocumentMoniker": "Services\\ChatHub.cs",
