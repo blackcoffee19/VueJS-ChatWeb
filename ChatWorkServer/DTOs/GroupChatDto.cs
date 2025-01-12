@@ -2,11 +2,11 @@
 {
     public class GroupChatDto
     {
-        public GroupChatDto(int grId, string? name, int userCreatedId, DateTime createdDate, string code)
+        public GroupChatDto(int grId, string? name, int userCreated, DateTime createdDate, string code)
         {
             GrId = grId;
             Name = name;
-            UserCreatedId = userCreatedId;
+            UserCreated = userCreated;
             CreatedDate = createdDate;
             Code = code;
         }
@@ -15,7 +15,7 @@
         public string Image { get; set; }
         public string? Name { get; set; }
         public string? SubName { get; set; }
-        public int UserCreatedId { get; set; }
+        public int UserCreated { get; set; }
         public string? Code { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime BlockedDate { get; set; }

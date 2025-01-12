@@ -39,10 +39,16 @@ export default {
   getNotifications() {
     return api.get('/Users/ListNotifications');
   },
-  postAddFriendActions(id, isAccept = true) {
-    return api.post(`/Users/AddFriendActions?reqId=${id}&actions=${isAccept ? 1 : 0}`);
+  postAddFriendActions(id, isUserId, isAccept = true) {
+    return api.post(`/Users/AddFriendActions?reqId=${id}&isUserId=${isUserId?1:0}&actions=${isAccept ? 1 : 0}`);
   },
   postGetConnectionId(idGroup) {
     return api.post(`/Connection/GetUserConnection?id=${idGroup}`);
+  },
+  postGetUserProfile() {
+    return api.post(`/Users/profie`);
+  },
+  postUnFriend(userId) {
+    return api.post(`/Users/UnfriendAction?userId=${userId}`);
   }
 }

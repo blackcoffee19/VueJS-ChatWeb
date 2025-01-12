@@ -1,10 +1,12 @@
 import './assets/main.css'
 //import '@/assets/layout/layout.scss'
 import '@/assets/demo/demo.scss'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import 'primeflex/primeflex.css'
 import 'primeicons/primeicons.css';
-
+// Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
+// Import Bootstrap JavaScript plugins
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { createApp } from 'vue'
 import stores from './stores'
 import App from './App.vue'

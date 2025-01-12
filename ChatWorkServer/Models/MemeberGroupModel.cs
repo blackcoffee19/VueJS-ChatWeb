@@ -13,7 +13,9 @@ namespace ChatWorkServer.Models
         [Required]
         public int GroupId { get; set; }
         public DateTime CreatedDate { get; set; }
-        
+        public int? UserDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+
         public UsersModel User { get; set; }
         public GroupChatModel GroupChat { get; set; }
         public MemeberGroupModel() { }

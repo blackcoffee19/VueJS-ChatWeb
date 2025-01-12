@@ -17,18 +17,17 @@ export default {
     const error = ref(null);
     const fetchItems = async () => {
       try {
-       
         const response = await UserService.getListGroupChat();
         let data = await response.data;
-        
-        items.value = response.data;
-        for (let i = 0; i < data.length; i++) {
-          let members = data[i].memeberGroup;
+        store.dispatch("setCountNotification", data.notifications);
+        items.value = response.data.groupChats;
+        for (let i = 0; i < data.groupChats.length; i++) {
+          let members = data.groupChats[i].memeberGroup;
           let listMem = [];
           members.forEach(e => { listMem.push(e.userId); });
-          store.dispatch("addGroupChat", { groupName: data[i].code, users: listMem, name: data[i].name});
-          if (data[i].chatsSend != null) {
-            let chat = { groupId: data[i].grId, text: data[i].chatsSend.textMessage, createdAt: data[i].chatsSend.createdDate, userId: data[i].chatsSend.userId };
+          store.dispatch("addGroupChat", { groupName: data.groupChats[i].code, users: listMem, name: data.groupChats[i].name ?? data.groupChats[i].subName });
+          if (data.groupChats[i].chatsSend != null) {
+            let chat = { groupId: data.groupChats[i].grId, text: data.groupChats[i].chatsSend.textMessage, createdAt: data.groupChats[i].chatsSend.createdDate, userId: data.groupChats[i].chatsSend.userId };
             store.dispatch("loadLastesChats", chat);
           }
         }
@@ -136,7 +135,7 @@ export default {
                                           <div class="flex flex-column justify-around items-start w-9 md:hidden lg:block">
                                             <div class="flex-grow-1 line-height-1 ">
                                               <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{ item.subName }}</span>
-                                              <div class="text-lg font-medium mt-2">{{ item.name }}</div>
+                                              <div class="text-lg font-medium mt-2">{{ item.name ?? item.subName }}</div>
                                             </div>
                                             <div class="text-left" v-if="item.chatsSend!=null && item.chatsSend.id != 0">
                                               <span class="fw-normal text-sm" v-if="!checkCalling(item.code)">{{ getLastestChatText(item.grId) }}</span>

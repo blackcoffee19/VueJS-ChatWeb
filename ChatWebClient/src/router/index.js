@@ -25,6 +25,11 @@ const router = createRouter({
           path: '/videocall',
           name: 'video call',
           component: () => import('@/views/VideoCallView.vue')
+        },
+        {
+          path: '/profile',
+          name: "profile",
+          component: () => import('@/views/ProfileView.vue')
         }
       ]
     },

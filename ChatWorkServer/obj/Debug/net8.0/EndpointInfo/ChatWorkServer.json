@@ -208,7 +208,7 @@
       }
     },
     "/api/Users/profie": {
-      "get": {
+      "post": {
         "tags": [
           "Users"
         ],
@@ -577,7 +577,57 @@
             }
           },
           {
+            "name": "isUserId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "name": "actions",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/UnfriendAction": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -738,6 +788,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "userId": {
             "type": "integer",
             "format": "int32"
@@ -811,7 +866,7 @@
             "type": "string",
             "nullable": true
           },
-          "userCreatedId": {
+          "userCreated": {
             "type": "integer",
             "format": "int32"
           },
@@ -851,21 +906,47 @@
             "type": "string",
             "nullable": true
           },
-          "userCreatedId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "code": {
             "type": "string",
             "nullable": true
+          },
+          "userCreated": {
+            "type": "integer",
+            "format": "int32"
           },
           "createdDate": {
             "type": "string",
             "format": "date-time"
           },
+          "userModified": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "userBlocked": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "blockedDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
+          },
+          "userDeleted": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "memeberGroup": {
             "type": "array",
@@ -881,7 +962,7 @@
             },
             "nullable": true
           },
-          "userCreated": {
+          "userCreatedModel": {
             "$ref": "#/components/schemas/UsersModel"
           }
         },
@@ -955,6 +1036,16 @@
             "type": "string",
             "format": "date-time"
           },
+          "userDeleted": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "user": {
             "$ref": "#/components/schemas/UsersModel"
           },
@@ -1012,6 +1103,129 @@
         },
         "additionalProperties": false
       },
+      "RelationshipDto": {
+        "type": "object",
+        "properties": {
+          "relaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "counting": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_1_Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_2_Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "userCreated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userModified": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "userDeleted": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RelationshipModel": {
+        "type": "object",
+        "properties": {
+          "relaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_1_Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_2_Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "counting": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "userCreated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userModified": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "userDeleted": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user1": {
+            "$ref": "#/components/schemas/UsersModel"
+          },
+          "user2": {
+            "$ref": "#/components/schemas/UsersModel"
+          }
+        },
+        "additionalProperties": false
+      },
       "RequirementDto": {
         "type": "object",
         "properties": {
@@ -1061,6 +1275,9 @@
           "isSentRequest": {
             "type": "boolean"
           },
+          "isReceivedRequest": {
+            "type": "boolean"
+          },
           "groupsJoined": {
             "type": "array",
             "items": {
@@ -1079,6 +1296,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ChatDto"
+            },
+            "nullable": true
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelationshipDto"
             },
             "nullable": true
           }
@@ -1118,13 +1342,34 @@
           "isBlocked": {
             "type": "boolean"
           },
+          "userCreated": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "createdDate": {
             "type": "string",
             "format": "date-time"
           },
+          "userDeleted": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "userBlocked": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "blockedDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "groupsJoined": {
             "type": "array",
@@ -1144,6 +1389,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ChatModel"
+            },
+            "nullable": true
+          },
+          "userRelationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelationshipModel"
             },
             "nullable": true
           }

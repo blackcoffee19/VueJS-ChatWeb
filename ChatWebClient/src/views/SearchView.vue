@@ -67,6 +67,52 @@
             }
            }).catch(error => console.log(error));
         }
+      },
+      handleAccept(userId) {
+        UserService.postAddFriendActions(userId, true).then(response => {
+          let res = Object.assign({}, response);
+          if (res.status == 200 && res.data == 1) {
+            this.$store.dispatch("minusNotification");
+            for (let i = 0; i < this.getSearchUsers.length; i++) {
+              if (this.getSearchUsers[i].usID == userId) {
+                this.getSearchUsers[i].isSentRequest = false;
+                this.getSearchUsers[i].isFriend = true;
+                this.getSearchUsers[i].isReceivedRequest = false;
+                break;
+              }
+            }
+          }
+        }).catch(error => console.log(error));
+      },
+      handleCancel(userId) {
+        UserService.postAddFriendActions(userId,true, false).then(response => {
+          let res = Object.assign({}, response);
+          if (res.status == 200 && res.data == 2) {
+            this.$store.dispatch("minusNotification");
+            for (let i = 0; i < this.getSearchUsers.length; i++) {
+              if (this.getSearchUsers[i].usID == userId) {
+                this.getSearchUsers[i].isSentRequest = false;
+                this.getSearchUsers[i].isReceivedRequest = false;
+                break;
+              }
+            }
+          }cd
+        }).catch(error => console.log(error));
+      },
+      handleUnfriend(userid) {
+        UserService.postUnFriend(userid).then(resp => {
+          let res = Object.assign({}, resp);
+          if (res.status == 200) {
+            for (let i = 0; i < this.getSearchUsers.length; i++) {
+              if (this.getSearchUsers[i].usID == userid) {
+                this.getSearchUsers[i].isSentRequest = false;
+                this.getSearchUsers[i].isFriend = false;
+                this.getSearchUsers[i].isReceivedRequest = false;
+                break;
+              }
+            }
+          }
+        })
       }
     }
   }
@@ -87,11 +133,11 @@
         <template #list="slotProps">
           <div class="flex flex-column flex-grow-1">
             <div v-for="(item, index) in slotProps.items" :key="index">
-              <div class="flex flex-columnl sm:flex-row sm:items-center p-3 gap-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+              <div class="flex  sm:flex-row sm:items-center p-3 gap-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                 <div class="md:w-40 relative" style="width:150px; height:150px">
                   <img :src="'/images/'+ item.avatar" class="block xl:block mx-auto rounded w-full" :alt="item.fullname" style="width: 100%; height: 100%;object-fit: cover " />
                 </div>
-                <div class="flex flex-col md:flex-row justify-content-between md:items-center flex-1 gap-6">
+                <div class="flex md:flex-row justify-content-between md:items-center flex-1 gap-6">
                   <div class="flex flex-row md:flex-col justify-content-between items-start gap-2">
                     <div>
                       <div class="text-lg font-medium mt-2">{{ item.fullname }}</div>
@@ -99,10 +145,12 @@
                   </div>
                   <div class="flex flex-col md:items-end pt-5">
                     <div class="flex flex-row-reverse md:flex-row gap-2 h-25">
-                      <Button icon="pi pi-heart" outlined></Button>
-                      <Button icon="pi pi-plus" label="Add Friend" v-if="!item.isFriend && !item.isSentRequest" class="flex-auto md:flex-initial whitespace-nowrap" @click="sendRequest(item.usID)"></Button>
-                      <Button icon="pi pi-times" severity="danger" v-if="item.isFriend && !item.isSentRequest" variant="outlined" aria-label="Cancel" />
-                      <Button icon="pi pi-times" severity="warn" v-if="!item.isFriend && item.isSentRequest" variant="outlined" label="Cancel Request"  @click="sendCancelRequest(item.usID)" />
+                      <Button icon="pi pi-heart" class="flex-auto md:flex-initial whitespace-nowrap p-3"   outlined></Button>
+                      <Button icon="pi pi-plus" label="Add Friend" v-if="!item.isFriend && !item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" @click="sendRequest(item.usID)"></Button>
+                      <Button icon="pi pi-times" severity="danger" v-if="item.isFriend && !item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" aria-label="Cancel" @click="handleUnfriend(item.usID)" />
+                      <Button icon="pi pi-times" severity="warn" v-if="!item.isFriend && item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" label="Cancel Request" @click="sendCancelRequest(item.usID)" />
+                      <Button icon="pi pi-check" severity="success"  v-if="!item.isFriend && item.isReceivedRequest &&  !item.isSentRequest " class="flex-auto md:flex-initial whitespace-nowrap p-3" aria-label="Accept" label="Accept" @click="handleAccept(item.usID)" />
+                      <Button icon="pi pi-times" severity="danger"  v-if="!item.isFriend && item.isReceivedRequest && !item.isSentRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3"   aria-label="Cancel" label="Cancel" @click="handleCancel(item.usID)" />
                     </div>
                   </div>
                 </div>

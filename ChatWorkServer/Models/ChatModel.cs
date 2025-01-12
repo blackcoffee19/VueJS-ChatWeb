@@ -11,6 +11,7 @@ namespace ChatWorkServer.Models
         public string? TextMessage { get; set; }
         public string? ImgMessage { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime? DeletedDate { get; set; }
         public int UserId { get; set; }
         public int GroupId { get; set; }
         public bool IsSeen { get; set; }

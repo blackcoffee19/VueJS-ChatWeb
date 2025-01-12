@@ -9,6 +9,9 @@ using ChatWorkServer.Common;
 using System.Security.Claims;
 using ChatWorkServer.DTOs;
 using System.Data.Common;
+using ChatWorkServer.Services;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
+using OpenTelemetry.Trace;
 namespace ChatWorkServer.Controllers
 {
     [Route("api/[controller]")]
@@ -22,8 +25,12 @@ namespace ChatWorkServer.Controllers
         {
             _context = context;
         }
-
-        [HttpGet("profie")]
+        public class ResponseListGroupChatAndNotification
+        {
+            public List<GroupChatDto> groupChats { get; set; }
+            public int notifications { get; set; }
+        }
+        [HttpPost("profie")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetProfie()
         {
             var userId = User.FindFirstValue(ClaimTypes.Sid); // Lấy Id từ Claims
@@ -31,8 +38,24 @@ namespace ChatWorkServer.Controllers
             if (userId != null) {
                 int id = 0; 
                 bool parse = int.TryParse(userId, out id);
-                UsersModel user = await _context.Users.FirstAsync(x=> x.UsID == id);
+                UsersModel? user = await _context.Users.FirstOrDefaultAsync(x=> x.UsID == id);
+                if (user == null) {
+                    return BadRequest();
+                }
                 UserDto userDto = new UserDto(user.UsID,user.Username,"", user.Fullname, user.Avatar, user.IsAdmin);
+                ICollection<RelationshipDto> listRelationDto = new List<RelationshipDto>();
+                List<RelationshipModel> listRelation=  await _context.Relationships.Where(x => (x.User_1_Id == id || x.User_2_Id == id) && (x.UserDeleted ==null || x.UserDeleted == 0)).ToListAsync();
+                foreach (RelationshipModel relation in listRelation)
+                {
+                    UsersModel? userRelation = await _context.Users.FirstOrDefaultAsync(x => (x.UsID == relation.User_1_Id || x.UsID == relation.User_2_Id ) && x.UsID != id);
+                    if (userRelation != null) { 
+                        RelationshipDto relationDto = new RelationshipDto(relation.RelaId, relation.Type, relation.User_1_Id, relation.User_2_Id, relation.Counting,relation.Status, relation.UserCreated, relation.CreatedDate);
+                        relationDto.User = new UserDto(userRelation.UsID, userRelation.Username, "", userRelation.Fullname, userRelation.Avatar, userRelation.IsAdmin);
+                        relationDto.User.IsFriend = relation.Type == 1;
+                        listRelationDto.Add(relationDto);
+                    }
+                }
+                userDto.Relationships = listRelationDto;
                 return Ok(userDto);
             }
             return BadRequest();
@@ -45,18 +68,18 @@ namespace ChatWorkServer.Controllers
             {
                 int id = 0;
                 bool parse = int.TryParse(userId, out id);
-                List<int> ListGr = _context.Memebers.Where(x=> x.UserId ==  id).Select(x=> x.GroupId).ToList();
+                List<int> ListGr = _context.Memebers.Where(x=> (x.UserId ==  id) && x.UserDeleted == null).Select(x=> x.GroupId).ToList();
                 List<GroupChatModel> ListData= await _context.GroupChats.Where(x => ListGr.Contains(x.GrId)).ToListAsync();
                 List<GroupChatDto> ListGroup = new List<GroupChatDto>();
                 if (ListData.Count > 0) { 
                     ListData.ForEach( x =>
                     {
-                        GroupChatDto group = new GroupChatDto(x.GrId, x.Name, x.UserCreatedId, x.CreatedDate, x.Code);
+                        GroupChatDto group = new GroupChatDto(x.GrId, x.Name, x.UserCreated, x.CreatedDate, x.Code);
                         List<MemeberGroupModel> ListMemberGroups = _context.Memebers.Where(y => y.GroupId == x.GrId).ToList();
                         List<MemberGroupDto> ListMemberGroupsDto = new List<MemberGroupDto>();
                         ListMemberGroups.ForEach(y =>
                         {
-                            ListMemberGroupsDto.Add(new MemberGroupDto(y.UserId, y.GroupId, x.UserCreatedId == y.UserId, y.CreatedDate));
+                            ListMemberGroupsDto.Add(new MemberGroupDto(y.UserId, y.GroupId, x.UserCreated == y.UserId, y.CreatedDate));
                         });
                         group.MemeberGroup = ListMemberGroupsDto;
                         MemberGroupDto? mem = ListMemberGroupsDto.FirstOrDefault(y => y.UserId != id);
@@ -74,8 +97,11 @@ namespace ChatWorkServer.Controllers
                         ListGroup.Add(group);
                     });
                 }
-
-                return Ok(ListGroup);
+                List<RequirementModel> listReq = await _context.Requirements.Where(x => x.AssigneeId == id && x.Status && x.Type == 1).ToListAsync();
+                ResponseListGroupChatAndNotification res = new ResponseListGroupChatAndNotification();
+                res.groupChats = ListGroup;
+                res.notifications = listReq.Count;
+                return Ok( res);
             }
             return BadRequest();
         }
@@ -166,7 +192,9 @@ namespace ChatWorkServer.Controllers
                 }
                 us.IsFriend = isSameGroupChat;
                 bool checkSendRequest = _context.Requirements.Any(z => z.RequesterId == usId && z.AssigneeId == x.UsID && z.Status);
+                bool checkReceivedRequest = _context.Requirements.Any(z => z.AssigneeId == usId && z.RequesterId == x.UsID && z.Status);
                 us.IsSentRequest = checkSendRequest;
+                us.IsReceivedRequest = checkReceivedRequest;
                 lis.Add(us);
             });
             return Ok(lis);
@@ -217,6 +245,7 @@ namespace ChatWorkServer.Controllers
                 foreach (var item in newRequirement)
                 {
                     item.Status = false;
+                    item.ModifiedDate = DateTime.Now;
                     _context.Update(item);
                 }
                 _context.SaveChanges();
@@ -245,55 +274,41 @@ namespace ChatWorkServer.Controllers
             return Ok(listNoti);
         }
         [HttpPost("AddFriendActions")]
-        public async Task<ActionResult<int?>> AddFriendActions(int reqId, int actions) {
-            
-            RequirementModel? requirement = await _context.Requirements.FindAsync(reqId);
+        public async Task<ActionResult<int?>> AddFriendActions(int reqId, int isUserId, int actions)
+        { //1 is accept add friend, 0 is un accept
+            var userId = User.FindFirstValue(ClaimTypes.Sid);
+            int countRq = isUserId == 1? _context.Requirements.Count(x => x.AssigneeId == Int32.Parse(userId) && x.RequesterId == reqId && x.Status) : 0;
+            if (countRq > 1)
+            {
+                return BadRequest();
+            }
+            RequirementModel? requirement = isUserId == 1? await _context.Requirements.FirstOrDefaultAsync(x => x.AssigneeId == Int32.Parse( userId )&& x.RequesterId == reqId && x.Status ) : await _context.Requirements.FindAsync(reqId);
+
             if (actions == 1 && requirement!=null) {
-                requirement.Status = false;
-                requirement.Type = 2;
-                var update = _context.Update(requirement);
-                if(update != null)
-                {
-                    _context.SaveChanges();
-                    UsersModel user = await _context.Users.FindAsync(requirement.RequesterId);
-                    GroupChatModel group = new GroupChatModel();
-                    int count = _context.GroupChats.Count();
-                    group.Code = "XG"+(count+1);
-                    while(_context.GroupChats.Any(x => x.Code == group.Code))
-                    {
-                        count += 1;
-                        group.Code = "XG" + count;
-                    }
-                    group.Name = user.Fullname;
-                    group.UserCreatedId = requirement.RequesterId;
-                    group.CreatedDate = DateTime.Now;
-                    _context.GroupChats.Add(group);
-                    _context.SaveChanges();
-                    MemeberGroupModel memeberGroup = new MemeberGroupModel();
-                    memeberGroup.GroupId = group.GrId;
-                    memeberGroup.UserId = requirement.RequesterId;
-                    memeberGroup.CreatedDate = DateTime.Now;
-                    _context.Memebers.Add(memeberGroup);
-                    _context.SaveChanges();
-                    MemeberGroupModel memeberGroup2 = new MemeberGroupModel();
-                    memeberGroup2.GroupId = group.GrId;
-                    memeberGroup2.UserId = requirement.AssigneeId;
-                    memeberGroup2.CreatedDate = DateTime.Now;
-                    _context.Memebers.Add(memeberGroup2);
-                    _context.SaveChanges();
-                    return Ok(1);
-                }
+                new RequirementService(_context).AddFriendAction(requirement.RId);
+                return Ok(1);
             }
             else if(actions == 0 && requirement != null)
             {
                 requirement.Status = false;
                 requirement.Type = 3;
+                requirement.ModifiedDate = DateTime.Now;
                 var update = _context.Update(requirement);
                 if (update != null)
                 {
                     _context.SaveChanges();
                     return Ok(2);
                 }
+            }
+            return BadRequest();
+        }
+        [HttpPost("UnfriendAction")]
+        public async Task<ActionResult<int?>> UnfriendAction(int userId) {
+            var requId = User.FindFirstValue(ClaimTypes.Sid);
+            if (requId != null ) {
+                int usId = int.Parse(requId);
+                new RequirementService(_context).UnFriendAction(usId, userId);
+                return Ok();
             }
             return BadRequest();
         }

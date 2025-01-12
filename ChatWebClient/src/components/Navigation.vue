@@ -1,9 +1,11 @@
 <script lang="js">
-  import Menu from 'primevue/menu';
-  import {  mapGetters } from 'vuex';
+ import Menu from 'primevue/menu';
+import {  mapGetters } from 'vuex';
 import { RouterLink } from 'vue-router';
 import stores from '@/stores';
 import router from '@/router';
+import { onMounted, ref } from 'vue';
+import { Popover } from 'bootstrap';
   export default {
     components: {
       Menu,
@@ -46,19 +48,41 @@ import router from '@/router';
           ]
         }
       ];
-      return { menuitems }
+      const popoverButton = ref(null);
+      const popoverContent = ref(null);
 
+      return { menuitems, popoverButton, popoverContent };
+    },
+    mounted() {
+      if (this.popoverButton) {
+        new Popover(this.popoverButton, {
+          content: this.popoverContent,
+          html: true,
+          placement: 'right',
+          trigger: 'click',
+        });
+      }
     },
     computed: {
-      ...mapGetters(['getRequirements'])
+      ...mapGetters(['getCountNotification'])
     },
     methods: {
+      goToProfile() {
+        this.$router.push({ name: 'profile' });
+      },
       logout()  {
         stores.dispatch("logout"); 
         router.push("/login");   
       }
-    }
-
+    },
+    beforeUnmount() {
+      if (this.popoverButton) {
+        const popoverInstance = Popover.getInstance(this.popoverButton);
+        if (popoverInstance) {
+          popoverInstance.dispose();
+        }
+      }
+    },
   }
 </script>
 <style>
@@ -113,12 +137,12 @@ import router from '@/router';
             </template>
             <template #item="{ item, props }">
               <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                <OverlayBadge :value="getRequirements.length" severity="danger" v-if="getRequirements.length>0 && item.label == 'Notification'">
+                <OverlayBadge :value="getCountNotification" severity="danger" v-if="getCountNotification>0 && item.label == 'Notification'">
                   <a :href="href" v-bind="props.action" @click="navigate">
                     <span :class="item.icon"></span>
                   </a>
                 </OverlayBadge>
-                <a :href="href" v-bind="props.action" @click="navigate"  v-if="getRequirements.length==0 || item.label != 'Notification'">
+                <a :href="href" v-bind="props.action" @click="navigate"  v-if="getCountNotification==0 || item.label != 'Notification'">
                   <span :class="item.icon"></span>
                 </a>
               </router-link>
@@ -127,10 +151,39 @@ import router from '@/router';
                 </a>
             </template>
             <template #end>
-                <a @click="logout"  class="p-menu-item-link">
-                    <span class="pi pi-user" ></span>
+              <!-- Nút kích hoạt popover -->
+              <button ref="popoverButton" 
+                      type="button"
+                      class="p-menu-item-link border-0 btn-profile" 
+                      data-bs-toggle="popover"
+                      data-bs-placement="right">
+                <span class="pi pi-user"></span>
+              </button>
+
+              <!-- Nội dung popover -->
+              <div ref="popoverContent" id="popover-content">
+                <a @click="goToProfile" class="text-black text-decoration-none">
+                  <span class="pi pi-user me-2"></span> Profile
                 </a>
+                <a @click="logout" class="text-black text-decoration-none">
+                  <span class="pi pi-sign-out me-2s"></span> Log Out
+                </a>
+              </div>
             </template>
         </Menu>
     </nav>
 </template>
+<style scoped>
+  #popover-content {
+    display: none; 
+  }
+  .btn-profile {
+      background-color:white;
+  }
+
+  .popover.show #popover-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+</style>

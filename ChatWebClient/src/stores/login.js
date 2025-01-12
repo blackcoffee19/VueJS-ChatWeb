@@ -3,7 +3,6 @@ export default {
     state:{
         activeBtn: false,
         error: false,
-        message: "",
         username: "",
         password: "",
         fullname: ""
@@ -14,9 +13,6 @@ export default {
         },
         setError(state, status){
             state.error = status;
-        },
-        setMessage(state, message){
-            state.message = message;
         },
         setUsername(state, username){
             state.username = username;
@@ -32,16 +28,12 @@ export default {
         toggleActive({commit, state}){
             commit("setActiveBtn", !state.activeBtn);
             commit("setError", false);
-            commit("setMessage","");
             commit("setUsername", "");
-            commit("setPassword","");
+            commit("setPassword", "");
             commit("setFullname", "");
         },
         setError({commit}, status){
             commit("setError", status);
-        },
-        setMessage({commit}, message){
-            commit("setMessage",message);
         },
         setUsername({commit}, event){
             commit("setUsername", event.target.value);
@@ -54,8 +46,10 @@ export default {
         }
     },
     getters: {
-        getActiveBtn:(state)=> state.activeBtn,
-        getError: (state) => state.error,
-        getMessage: (state) => state.message
+      getActiveBtn:(state)=> state.activeBtn,
+      getError: (state) => state.error,
+      getUsername: (state) => state.username,
+      getPassword: (state) => state.password,
+      getFullname: (state) => state.fullname
     }
 }

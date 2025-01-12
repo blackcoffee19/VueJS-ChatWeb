@@ -19,7 +19,6 @@
     mounted() {
       UserService.getNotifications().then(response => {
         let res = Object.assign({}, response);
-        console.log(res);
         this.loadNotifications(res.data)
       }).catch(error => console.log(error));
     },
@@ -29,16 +28,16 @@
         return type == 1 ? "Add Friend Request" : "???";
       },
       handleAccept(id, userId) {
-        UserService.postAddFriendActions(id).then(response => {
+        UserService.postAddFriendActions(id,false).then(response => {
           let res = Object.assign({}, response);
-          if (res.status == 200 && res.data== 1){
+          if (res.status == 200 ){
           this.updateNotifications(id);
           this.sendRequestSocket({ userId: userId, requirementId: id });
           }
         }).catch(error => console.log(error));
       },
       handleCancel(id, userId) {
-        UserService.postAddFriendActions(id,false).then(response => {
+        UserService.postAddFriendActions(id,false,false).then(response => {
           let res = Object.assign({}, response);
           if (res.status == 200 && res.data== 2){
           this.updateNotifications(id);
@@ -75,8 +74,8 @@
                   </div>
                   <div class="flex flex-col md:items-end pt-5">
                     <div class="flex flex-row-reverse md:flex-row gap-2 h-50">
-                      <Button icon="pi pi-check" severity="success" aria-label="Accept" label="Accept" @click="handleAccept(item.rId, item.userId)" />
-                      <Button icon="pi pi-times" severity="danger" aria-label="Cancel" label="Cancel"   @click="handleCancel(item.rId,item.userId)" />
+                      <Button icon="pi pi-check" severity="success" aria-label="Accept" label="Accept" class="flex-auto md:flex-initial whitespace-nowrap p-3" @click="handleAccept(item.rId, item.userId)" />
+                      <Button icon="pi pi-times" severity="danger" aria-label="Cancel" label="Cancel" class="flex-auto md:flex-initial whitespace-nowrap p-3"  @click="handleCancel(item.rId,item.userId)" />
                     </div>
                   </div>
                 </div>

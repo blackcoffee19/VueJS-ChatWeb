@@ -9,19 +9,25 @@ namespace ChatWorkServer.Models
         [Key]
         public int GrId { get; set; }
         public string? Name { get; set; }
-        public int UserCreatedId { get; set; }
         public string? Code { get; set; }
+        public int UserCreated { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime BlockedDate { get; set; }
+        public int? UserModified { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public int? UserBlocked { get; set; }
+        public DateTime? BlockedDate { get; set; }
+        public int? UserDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+
         public virtual ICollection<MemeberGroupModel> MemeberGroup { get; set; } = new List<MemeberGroupModel>();
         public virtual ICollection<ChatModel> ChatsSend { get; set; } = new List<ChatModel>();
-        public UsersModel UserCreated { get; set; }
+        public UsersModel UserCreatedModel { get; set; }
         public GroupChatModel() { }
         public GroupChatModel(int Id,string Name, string Code, int UserCreated, DateTime date) { 
             this.GrId = Id;
             this.Name = Name;
             this.Code = Code;
-            this.UserCreatedId = UserCreated;
+            this.UserCreated = UserCreated;
             this.CreatedDate = date;
         }
     }

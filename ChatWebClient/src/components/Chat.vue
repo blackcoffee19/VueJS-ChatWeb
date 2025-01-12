@@ -81,7 +81,11 @@
         </div>
         <div class="d-flex flex-column h-100 align-items-between"  v-if="!isLoading && getChats">
           <div class="d-flex flex-column flex-grow-1" style="height: 500px; overflow-y:auto; overflow-x:hidden; padding-top:60px">
-            <DataView :value="getChats">
+            <div v-if="getChats.length==0">
+
+
+            </div>
+            <DataView :value="getChats" v-else>
               <template #list="slotProps">
                   <div class="p-col-12 p-md-2" v-for="(item, index) in slotProps.items" :key="index">
                     <div class="d-flex flex-row" :class="{ 'flex-row-reverse' : getUserId==item.userId }">

@@ -11,6 +11,7 @@
     <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint . --fix</PackageJsonScriptsLint>
     <PackageJsonDependenciesMicrosoftSignalr Condition="$(PackageJsonDependenciesMicrosoftSignalr) == ''">^8.0.7</PackageJsonDependenciesMicrosoftSignalr>
     <PackageJsonDependenciesPopperjsCore Condition="$(PackageJsonDependenciesPopperjsCore) == ''">^2.11.8</PackageJsonDependenciesPopperjsCore>
+    <PackageJsonDependenciesPrimevueForms Condition="$(PackageJsonDependenciesPrimevueForms) == ''">^4.2.5</PackageJsonDependenciesPrimevueForms>
     <PackageJsonDependenciesPrimevueThemes Condition="$(PackageJsonDependenciesPrimevueThemes) == ''">^4.2.5</PackageJsonDependenciesPrimevueThemes>
     <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.7.9</PackageJsonDependenciesAxios>
     <PackageJsonDependenciesBootstrap Condition="$(PackageJsonDependenciesBootstrap) == ''">^5.3.3</PackageJsonDependenciesBootstrap>

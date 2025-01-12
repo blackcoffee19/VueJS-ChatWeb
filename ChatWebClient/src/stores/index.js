@@ -4,6 +4,7 @@ import * as signalR from '@microsoft/signalr';
 import search from './search';
 import videocall from './videocall';
 import login from './login';
+import profile from './profile';
 export default createStore({
   state: {
     token: localStorage.getItem('token') || null, // JWT Token
@@ -18,6 +19,7 @@ export default createStore({
     lastestChats: [],
     requirements: [],
     notifications: [],
+    countNotification: 0,
     listGroup: [],
     callingFailue: false
   },
@@ -75,6 +77,9 @@ export default createStore({
     },
     loadNotifications(state, noti) {
       state.notifications= noti;
+    },
+    setCountNotification(state, num) {
+      state.countNotification = num;
     },
     setListGroup(state, group) {
       let ind = state.listGroup.findIndex(x => x.groupCode == group.groupCode);
@@ -231,6 +236,13 @@ export default createStore({
       commit("loadNotifications", list);
       commit("clearRequirement");
     },
+    setCountNotification({ commit }, num) {
+      commit("setCountNotification", num);
+    },
+    minusNotification({ commit, state }) {
+      let num = (state.countNotification - 1) >= 0 ? state.countNotification - 1 : 0;
+      commit("setCountNotification", num);
+    },
     updateNotifications({ state }, { reqId }) {
       let ind = state.notifications.findIndex(x => x.id == reqId);
       if (ind != -1) {
@@ -255,12 +267,9 @@ export default createStore({
     }
   },
   getters: {
-    // Lấy trạng thái đăng nhập
     isAuthenticated: (state) => !!state.token,
-    // Lấy thông tin user
     getUser: (state) => state.user,
     getUserId: (state) => { let userJ = JSON.parse(state.user); return userJ.id; },
-    // Lấy token
     getToken: (state) => state.token,
     getGroupChatSelected: (state) => state.groupChatSelected,
     getChats: (state) => state.chats,
@@ -270,6 +279,9 @@ export default createStore({
     getMessagesSocket: (state) => state.messagesSocket,
     getLastestChats: (state) => state.lastestChats,
     getRequirements: (state) => state.requirements,
+    getCountNotification: (state) => {
+      return state.requirements.length + state.countNotification;
+    },
     getNotifications: (state) => state.notifications,
     getConnection: (state) => state.connection,
     getListGroup: (state) => state.listGroup,
@@ -278,6 +290,7 @@ export default createStore({
    modules: {
     search, // Đăng ký module search
     videocall,
-    login
+    login,
+    profile
   },
 })
