@@ -212,6 +212,15 @@
         "tags": [
           "Users"
         ],
+        "parameters": [
+          {
+            "name": "ParamUser",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -237,6 +246,54 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/friends": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "usrId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RelationshipDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RelationshipDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RelationshipDto"
                   }
                 }
               }
@@ -891,6 +948,30 @@
           },
           "chatsSend": {
             "$ref": "#/components/schemas/ChatDto"
+          },
+          "userBlocked": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "blockedDate1": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "userDeleted": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -1305,6 +1386,9 @@
               "$ref": "#/components/schemas/RelationshipDto"
             },
             "nullable": true
+          },
+          "group": {
+            "$ref": "#/components/schemas/GroupChatDto"
           }
         },
         "additionalProperties": false

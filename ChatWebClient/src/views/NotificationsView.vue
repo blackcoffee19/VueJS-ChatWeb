@@ -30,18 +30,20 @@
       handleAccept(id, userId) {
         UserService.postAddFriendActions(id,false).then(response => {
           let res = Object.assign({}, response);
-          if (res.status == 200 ){
-          this.updateNotifications(id);
-          this.sendRequestSocket({ userId: userId, requirementId: id });
+          if (res.status == 200) {
+            this.$store.dispatch("minusNotification");
+            this.updateNotifications(id);
+            this.sendRequestSocket({ userId: userId, requirementId: id });
           }
         }).catch(error => console.log(error));
       },
       handleCancel(id, userId) {
         UserService.postAddFriendActions(id,false,false).then(response => {
           let res = Object.assign({}, response);
-          if (res.status == 200 && res.data== 2){
-          this.updateNotifications(id);
-          this.sendRequestSocket({ userId: userId, requirementId: id });
+          if (res.status == 200 && res.data == 2) {
+            this.$store.dispatch("minusNotification");
+            this.updateNotifications(id);
+            this.sendRequestSocket({ userId: userId, requirementId: id });
           }
         }).catch(error => console.log(error));
       }
@@ -55,7 +57,7 @@
       <h3 class="my-4">Notifications</h3>
       <hr/>
       <p v-if="getNotifications.length == 0">You have 0 notification</p>
-      <DataView :value="getNotifications">
+      <DataView :value="getNotifications" v-else>
         <template #list="slotProps">
           <div class="flex flex-column flex-grow-1">
             <div v-for="(item, index) in slotProps.items" :key="index">

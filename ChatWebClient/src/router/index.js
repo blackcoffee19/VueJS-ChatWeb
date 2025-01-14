@@ -27,9 +27,14 @@ const router = createRouter({
           component: () => import('@/views/VideoCallView.vue')
         },
         {
-          path: '/profile',
+          path: '/profile/:username?',
           name: "profile",
           component: () => import('@/views/ProfileView.vue')
+        },
+        {
+          path: '/friends',
+          name: 'friends',
+          component: () => import('@/views/FriendsView.vue')
         }
       ]
     },

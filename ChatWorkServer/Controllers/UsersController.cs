@@ -12,6 +12,7 @@ using System.Data.Common;
 using ChatWorkServer.Services;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using OpenTelemetry.Trace;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 namespace ChatWorkServer.Controllers
 {
     [Route("api/[controller]")]
@@ -31,11 +32,27 @@ namespace ChatWorkServer.Controllers
             public int notifications { get; set; }
         }
         [HttpPost("profie")]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetProfie()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetProfie(string? ParamUser)
         {
             var userId = User.FindFirstValue(ClaimTypes.Sid); // Lấy Id từ Claims
-            var username = User.Identity?.Name; // Lấy Username
-            if (userId != null) {
+            if (ParamUser != null) {
+                int id = 0;
+                bool parse = int.TryParse(userId, out id);
+                UsersModel? user = await _context.Users.FirstOrDefaultAsync(x => x.Username == ParamUser);
+                if (user == null)
+                {
+                    return BadRequest();
+                }
+                UserDto userDto = new UserDto(user.UsID, user.Username, "", user.Fullname, user.Avatar, user.IsAdmin);
+                userDto.IsFriend = _context.Relationships.Any(x => ((x.User_1_Id == user.UsID && x.User_2_Id == id) || (x.User_2_Id == user.UsID && x.User_1_Id == id)) && x.UserDeleted == null && x.Status);
+                userDto.IsSentRequest = _context.Requirements.Any(x => x.RequesterId == id && x.AssigneeId == user.UsID && x.Type == 1 && x.Status);
+                userDto.IsReceivedRequest = _context.Requirements.Any(x => x.AssigneeId == id && x.RequesterId == user.UsID && x.Type == 1 && x.Status);
+                List<RelationshipDto> listData = new RequirementService(_context).ListFriend(id, user.UsID);
+                userDto.Relationships = listData;
+                userDto.Group = new RequirementService(_context).getGroupChatWithUser(id, user.UsID);
+                return Ok(userDto);
+            }
+            else if (ParamUser  ==null && userId != null) {
                 int id = 0; 
                 bool parse = int.TryParse(userId, out id);
                 UsersModel? user = await _context.Users.FirstOrDefaultAsync(x=> x.UsID == id);
@@ -43,22 +60,25 @@ namespace ChatWorkServer.Controllers
                     return BadRequest();
                 }
                 UserDto userDto = new UserDto(user.UsID,user.Username,"", user.Fullname, user.Avatar, user.IsAdmin);
-                ICollection<RelationshipDto> listRelationDto = new List<RelationshipDto>();
-                List<RelationshipModel> listRelation=  await _context.Relationships.Where(x => (x.User_1_Id == id || x.User_2_Id == id) && (x.UserDeleted ==null || x.UserDeleted == 0)).ToListAsync();
-                foreach (RelationshipModel relation in listRelation)
-                {
-                    UsersModel? userRelation = await _context.Users.FirstOrDefaultAsync(x => (x.UsID == relation.User_1_Id || x.UsID == relation.User_2_Id ) && x.UsID != id);
-                    if (userRelation != null) { 
-                        RelationshipDto relationDto = new RelationshipDto(relation.RelaId, relation.Type, relation.User_1_Id, relation.User_2_Id, relation.Counting,relation.Status, relation.UserCreated, relation.CreatedDate);
-                        relationDto.User = new UserDto(userRelation.UsID, userRelation.Username, "", userRelation.Fullname, userRelation.Avatar, userRelation.IsAdmin);
-                        relationDto.User.IsFriend = relation.Type == 1;
-                        listRelationDto.Add(relationDto);
-                    }
-                }
+                List<RelationshipDto> listRelationDto = new RequirementService(_context).ListFriend(id, null);
                 userDto.Relationships = listRelationDto;
+                
                 return Ok(userDto);
             }
             return BadRequest();
+        }
+        
+        [HttpGet("friends")]
+        public Task<ActionResult<IEnumerable<RelationshipDto>>> GetListFriend(int? usrId) {
+            var UId = User.FindFirstValue(ClaimTypes.Sid);
+            int id = 0;
+            bool parse = int.TryParse(UId, out id);
+            if (!parse)
+            {
+                return Task.FromResult<ActionResult<IEnumerable<RelationshipDto>>>(BadRequest());
+            }
+            List<RelationshipDto> listData = new RequirementService(_context).ListFriend(id, usrId);
+            return Task.FromResult<ActionResult<IEnumerable<RelationshipDto>>>(Ok(listData));
         }
         [HttpGet("ListGroupChat")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetListGroupChat()
@@ -185,14 +205,10 @@ namespace ChatWorkServer.Controllers
             List<int> grId = await _context.Memebers.Where(y => y.UserId == usId).Select(y => y.GroupId).ToListAsync();
             listUser.ForEach(async x => {
                 UserDto us = new UserDto(x.UsID, x.Username, "", x.Fullname, x.Avatar, x.IsAdmin);
-                bool isSameGroupChat = false;
-                foreach (int idG in grId) {
-                    bool check = _context.Memebers.Any( z => z.GroupId == idG && z.UserId == x.UsID);
-                    if (check) isSameGroupChat = true;
-                }
+                bool isSameGroupChat = _context.Relationships.Any(y => ((y.User_1_Id == x.UsID && y.User_2_Id == usId) || (y.User_2_Id == x.UsID && y.User_1_Id == usId)) && (y.UserDeleted ==null));
                 us.IsFriend = isSameGroupChat;
-                bool checkSendRequest = _context.Requirements.Any(z => z.RequesterId == usId && z.AssigneeId == x.UsID && z.Status);
-                bool checkReceivedRequest = _context.Requirements.Any(z => z.AssigneeId == usId && z.RequesterId == x.UsID && z.Status);
+                bool checkSendRequest = _context.Requirements.Any(z => z.RequesterId == usId && z.AssigneeId == x.UsID && z.Status && z.Type == 1);
+                bool checkReceivedRequest = _context.Requirements.Any(z => z.AssigneeId == usId && z.RequesterId == x.UsID && z.Status && z.Type == 1);
                 us.IsSentRequest = checkSendRequest;
                 us.IsReceivedRequest = checkReceivedRequest;
                 lis.Add(us);

@@ -242,6 +242,32 @@
   },
   {
     "ContainingType": "ChatWorkServer.Controllers.UsersController",
+    "Method": "GetListFriend",
+    "RelativePath": "api/Users/friends",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "usrId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ChatWorkServer.DTOs.RelationshipDto, ChatWorkServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ChatWorkServer.Controllers.UsersController",
     "Method": "GetListGroupChat",
     "RelativePath": "api/Users/ListGroupChat",
     "HttpMethod": "GET",
@@ -288,7 +314,13 @@
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "ParamUser",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[ChatWorkServer.DTOs.UserDto, ChatWorkServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",

@@ -38,5 +38,14 @@ namespace ChatWorkServer.Models
             this.CreatedDate = date;
             this.Avatar = avatar;
         }
+
+        public UsersModel(int usID, string username,string fullname, string avatar, DateTime time)
+        {
+            this.UsID = usID;
+            this.Username = username;
+            this.Fullname = fullname;
+            this.Avatar = avatar;
+            this.CreatedDate = time;
+        }
     }
 }

@@ -1,5 +1,5 @@
 <script lang="js">
-  import {  Button,DataView, InputGroup, InputText } from 'primevue';
+  import { Button, DataView, InputGroup, InputText, ButtonGroup } from 'primevue';
   import { mapActions, mapState, mapGetters } from 'vuex';
   import UserService from '@/services';
   export default {
@@ -7,26 +7,22 @@
       InputGroup,
       InputText,
       DataView,
-      Button
+      Button,
+      ButtonGroup
     },
     computed: {
       ...mapGetters('search', ['getSearchStr', 'getSearchUsers', 'getNotifications']),
       searchStr: {
         get() {
-          // Get the value from Vuex state or getter
           return this.$store.getters['search/getSearchStr'];
         },
         set(value) {
-          // Update the value in Vuex state via mutation or action
           this.$store.dispatch('search/inputSearch', value);
         },
       },
     },
     methods: {
-      //...mapActions('search',['inputSearch', 'updateSearchUsers','sendRequestSocket']),
       updateInput(event) {
-        //this.$store.dispatch('search/inputSearch', event.target.value);  // Cập nhật giá trị vào store
-        //this.$store.commit('search/updateSearchStr', event.target.value);
         this.$store.dispatch('search/inputSearch', event.target.value);
       },
       startSearch() {
@@ -96,7 +92,7 @@
                 break;
               }
             }
-          }cd
+          }
         }).catch(error => console.log(error));
       },
       handleUnfriend(userid) {
@@ -128,29 +124,37 @@
                    @input="updateInput"  />
       </InputGroup>
     </div>
-    <div class="flex flex-column" style="overflow-y:scroll">
+    <div class="flex flex-column" style="overflow-y:scroll" v-if="getSearchUsers.length>0">
       <DataView :value="getSearchUsers">
         <template #list="slotProps">
           <div class="flex flex-column flex-grow-1">
             <div v-for="(item, index) in slotProps.items" :key="index">
               <div class="flex  sm:flex-row sm:items-center p-3 gap-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                 <div class="md:w-40 relative" style="width:150px; height:150px">
-                  <img :src="'/images/'+ item.avatar" class="block xl:block mx-auto rounded w-full" :alt="item.fullname" style="width: 100%; height: 100%;object-fit: cover " />
+                  <router-link :to="{ name: 'profile', params: { username: item.username } }" >
+                    <img :src="'/images/'+ item.avatar" class="block xl:block mx-auto rounded w-full" :alt="item.fullname" style="width: 100%; height: 100%;object-fit: cover " />
+                   </router-link>
                 </div>
                 <div class="flex md:flex-row justify-content-between md:items-center flex-1 gap-6">
                   <div class="flex flex-row md:flex-col justify-content-between items-start gap-2">
                     <div>
-                      <div class="text-lg font-medium mt-2">{{ item.fullname }}</div>
+                      <div class="text-lg font-medium mt-2">
+                        <router-link :to="{ name: 'profile', params: { username: item.username } }" class="text-decoration-none text-black">
+                          {{ item.fullname }}
+                        </router-link>
+                      </div>
                     </div>
                   </div>
                   <div class="flex flex-col md:items-end pt-5">
                     <div class="flex flex-row-reverse md:flex-row gap-2 h-25">
-                      <Button icon="pi pi-heart" class="flex-auto md:flex-initial whitespace-nowrap p-3"   outlined></Button>
-                      <Button icon="pi pi-plus" label="Add Friend" v-if="!item.isFriend && !item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" @click="sendRequest(item.usID)"></Button>
-                      <Button icon="pi pi-times" severity="danger" v-if="item.isFriend && !item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" aria-label="Cancel" @click="handleUnfriend(item.usID)" />
-                      <Button icon="pi pi-times" severity="warn" v-if="!item.isFriend && item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" label="Cancel Request" @click="sendCancelRequest(item.usID)" />
-                      <Button icon="pi pi-check" severity="success"  v-if="!item.isFriend && item.isReceivedRequest &&  !item.isSentRequest " class="flex-auto md:flex-initial whitespace-nowrap p-3" aria-label="Accept" label="Accept" @click="handleAccept(item.usID)" />
-                      <Button icon="pi pi-times" severity="danger"  v-if="!item.isFriend && item.isReceivedRequest && !item.isSentRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3"   aria-label="Cancel" label="Cancel" @click="handleCancel(item.usID)" />
+                      <ButtonGroup>
+                        <Button icon="pi pi-heart" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" severity="help" raised></Button>
+                        <Button icon="pi pi-plus" severity="success" label="Add Friend" v-if="!item.isFriend && !item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" @click="sendRequest(item.usID)" raised></Button>
+                        <Button icon="pi pi-times" severity="danger" v-if="item.isFriend && !item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" aria-label="Cancel" @click="handleUnfriend(item.usID)" raised/>
+                        <Button icon="pi pi-times" severity="warn" v-if="!item.isFriend && item.isSentRequest && !item.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" label="Cancel Request" @click="sendCancelRequest(item.usID)" raised/>
+                        <Button icon="pi pi-check" severity="success"  v-if="!item.isFriend && item.isReceivedRequest &&  !item.isSentRequest " class="flex-auto md:flex-initial whitespace-nowrap p-3" aria-label="Accept" label="Accept" @click="handleAccept(item.usID)" raised/>
+                        <Button icon="pi pi-times" severity="danger"  v-if="!item.isFriend && item.isReceivedRequest && !item.isSentRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3"   aria-label="Cancel" label="Cancel" @click="handleCancel(item.usID)" raised />
+                      </ButtonGroup>
                     </div>
                   </div>
                 </div>

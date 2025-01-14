@@ -15,6 +15,7 @@
         public virtual ICollection<GroupChatDto> GroupCreated { get; set; } = new List<GroupChatDto>();
         public virtual ICollection<ChatDto> ChatsSend { get; set; } = new List<ChatDto>();
         public virtual ICollection<RelationshipDto> Relationships { get; set; } = new List<RelationshipDto>();
+        public GroupChatDto Group { get; internal set; }
         public UserDto(int id, string username, string password, string fullname, string av, bool isAdmin)
         {
             UsID = id;

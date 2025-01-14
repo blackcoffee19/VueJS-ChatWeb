@@ -225,4 +225,11 @@ export default {
   flex-direction: column;
   height: 100%;
 }
+  input#username,
+  input#username2,
+  input#fullname,
+  input#password2,
+  input#password {
+    width: 200px;
+  }
 </style>

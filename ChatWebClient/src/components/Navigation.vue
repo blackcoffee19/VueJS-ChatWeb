@@ -23,7 +23,7 @@ import { Popover } from 'bootstrap';
             {
               label: 'People',
               icon: 'pi pi-fw pi-users',
-              route: '/search'
+              route: '/friends'
             },
             {
               label: 'Chat',
@@ -36,9 +36,9 @@ import { Popover } from 'bootstrap';
               route: '/notification'
             },
             {
-              label: 'App',
-              icon: 'pi pi-fw pi-th-large',
-              route: '/'
+              label: 'Search',
+              icon: 'pi pi-fw pi-search',
+              route: '/search'
             },
             {
               label: 'Theme',

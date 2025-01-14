@@ -3,12 +3,12 @@
   import { Button} from 'primevue';
   import UserService from '@/services';
  export default {
-    //props: {
-    //  groupChat: {
-    //    type: String, // Kiểu dữ liệu
-    //    required: true, // Bắt buộc phải truyền prop này
-    //  },
-    //},
+    props: {
+      groupChatName: {
+        type: String, // Kiểu dữ liệu
+        required: true, // Bắt buộc phải truyền prop này
+      },
+    },
     components: {
      Button
     },
@@ -16,10 +16,7 @@
       ...mapGetters(['getGroupChatSelected', 'getListGroup','getGroupChatSelectedCode']),
     },
     methods: {
-      getGroupChatName() {
-        const group = this.getListGroup.find((g) => g.groupCode === this.getGroupChatSelectedCode);
-        return group ? group.groupName:"";
-      }
+      
     }
   };
 </script>
@@ -27,7 +24,7 @@
   <div class="shadow mb-3 px-4 pt-2 position-fixed top-0 z-1" style="height: 60px; width: -webkit-fill-available">
     <div class="flex flex-row px-5 ">
       <div class="flex-grow-1 fw-bold fs-4 font-monospace pt-1">
-        {{getGroupChatName()}}
+        {{this.groupChatName}}
       </div>
       <div >
         <router-link to="/videocall" >

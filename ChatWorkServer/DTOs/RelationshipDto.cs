@@ -19,7 +19,6 @@
         public int? UserDeleted { get; set; }
         public DateTime? DeletedDate { get; set; }
         public UserDto User { get; internal set; }
-
         public RelationshipDto() { }
 
         public RelationshipDto(int relaId, int type, int user_1_Id, int user_2_Id, int count,bool status, int userCreated, DateTime createdDate)

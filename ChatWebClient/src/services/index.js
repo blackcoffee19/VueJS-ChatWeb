@@ -45,10 +45,13 @@ export default {
   postGetConnectionId(idGroup) {
     return api.post(`/Connection/GetUserConnection?id=${idGroup}`);
   },
-  postGetUserProfile() {
-    return api.post(`/Users/profie`);
+  postGetUserProfile(username = "") {
+    return api.post(`/Users/profie?ParamUser=${username}`);
   },
   postUnFriend(userId) {
     return api.post(`/Users/UnfriendAction?userId=${userId}`);
+  },
+  getListFriend(userId = "") {
+    return api.get(`/Users/friends?usrId=${userId}`);
   }
 }

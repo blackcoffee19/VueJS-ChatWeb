@@ -8,11 +8,18 @@
     components: {
       ChatHeader
     },
+    props: {
+      groupName: {
+        type: String, // Kiểu dữ liệu
+        required: false, // Bắt buộc phải truyền prop này
+        default: "",
+      }
+    },
     setup() {
       
     },
     computed: {
-      ...mapGetters(['getGroupChatSelected', 'getGroupChatSelectedCode', 'getChats', 'isLoading', 'getUserId', 'getMessage', 'getMessagesSocket']),
+      ...mapGetters(['getGroupChatSelected', 'getGroupChatSelectedCode', 'getChats', 'isLoading', 'getUserId', 'getMessage', 'getMessagesSocket','getListGroup']),
       message: {
         get() {
           return this.getMessage; // Lấy giá trị từ getter
@@ -44,7 +51,7 @@
       getTimeSpanChat(chatp) {
         let chat = Object.assign({}, chatp);
         if (chat != undefined && chat.createdAt != undefined) {
-        let date = new Date(new Date(chat.createdDate).getTime());
+          let date = new Date(new Date(chat.createdDate).getTime());
           // Tính chênh lệch thời gian (milliseconds)
           const differenceInMilliseconds = new Date() - date;
           // Chuyển đổi milliseconds sang các đơn vị thời gian
@@ -57,6 +64,13 @@
         } else {
           return chat.timeSpan;
         }
+      },
+      getGroupChatName() {
+        if (this.groupName != null && this.groupName != "") {
+          return this.groupName;
+        }
+        const group = this.getListGroup ? this.getListGroup.find((g) => g.groupCode === this.getGroupChatSelectedCode) :null;
+        return group ? group.groupName : "";
       }
   },
   
@@ -65,7 +79,7 @@
 <template>
     <main class="main">
       <div class="container position-relative h-100">
-        <ChatHeader  v-if="getGroupChatSelected !=0 && !isLoading" />
+        <ChatHeader :groupChatName="getGroupChatName()"  v-if="getGroupChatSelected !=0 && !isLoading" />
         <div class="d-flex flex-column h-100 justify-content-center text-center" v-if="getGroupChatSelected ==0 && isLoading" >
           <div class="mb-6">
             <span class="icon icon-xl text-muted">

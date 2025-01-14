@@ -1,13 +1,15 @@
 <script lang="js">
   import { mapGetters, mapActions, mapState } from 'vuex';
-  import { Button, ProgressSpinner, FileUpload, InputText, Message, DataView } from 'primevue';
+  import { Button, ProgressSpinner, FileUpload, InputText, Message, DataView, Card, ButtonGroup } from 'primevue';
   import UserService from '@/services';
+  import ChatService from '@/services/chat';
   import store from '@/stores';
   import { Tab } from 'bootstrap';
   import { Form } from '@primevue/forms';
   import { Toast } from 'bootstrap';
   import { ref } from 'vue';
-  import HeartProgress  from '@/components/HeartProgress.vue';
+  import HeartProgress from '@/components/HeartProgress.vue';
+  import Chat from '@/components/Chat.vue';
   export default {
     components: {
       Button,
@@ -18,13 +20,20 @@
       Message,
       DataView,
       HeartProgress,
+      Chat,
+      ButtonGroup,
+      Card
     },
     data() {
       const src = ref(null);
 
       const initialValues = ref({
+        userID:0,
         username: "",
         fullname: "",
+        isFriend: false,
+        isSentRequest: false,
+        isReceivedRequest: false
       });
       const resolver = ({ values }) => {
         const errors = {};
@@ -49,13 +58,19 @@
         toastMessage: "",
         initialValues,
         resolver,
-        isListFriends: true
+        isListFriends: true,
+        isOwnProfile: false,
+        username: "",
+        groupchat: "",
+        group: null
       };
     },
     computed: {
+      ...mapGetters(['getUserId']),
       ...mapGetters('profile', ['getUser', 'getUserImg']),
     },
     methods: {
+      ...mapActions(["updateGroupChatCode",'updateGroupChat']),
       ...mapActions('profile', ['setUser']),
       initializeTabs() {
         const triggerTabList = document.querySelectorAll('#myTab .list-group-item button');
@@ -72,7 +87,6 @@
         const reader = new FileReader();
 
         reader.onload = async (e) => {
-          console.log(e);
           this.src = e.target.result;
         };
 
@@ -95,33 +109,117 @@
         this.isListFriends = false; 
 
       },
-      clipPathValue() {
-        const fillPercent = 100 - this.getUser.relationships.counting; // Tính toán % chưa fill
-        console.log(fillPercent);
-        return `polygon(0% ${fillPercent}%, 100% ${fillPercent}%, 100% 100%, 0% 100%)`;
+      async fetchtUser() {
+        if (this.username  && this.username != "") {
+          this.isOwnProfile = false;
+        } else {
+          this.isOwnProfile = true;
+        }
+        await UserService.postGetUserProfile(this.username).then(res => {
+          if (res.status == 200) {
+            this.setUser(res.data);
+            this.initialValues = {
+              userID: res.data.usID,
+              username: res.data.username,
+              fullname: res.data.fullname,
+              isFriend: res.data.isFriend,
+              isSentRequest: res.data.isSentRequest,
+              isReceivedRequest: res.data.isReceivedRequest
+            };
+            if (res.data.usID == this.getUserId) {
+              this.isOwnProfile = true;
+            }
+            if (res.data.group != null && res.data.group.grId !=0) {
+              ChatService.GetListChats(res.data.group.grId);
+              this.updateGroupChatCode(res.data.group.code);
+              this.updateGroupChat(res.data.group.grId);
+              this.groupchat = res.data.group.name ?? res.data.fullname;
+              this.group = res.data.group;
+            }
+          } else {
+            this.isError = true;
+            this.errorMessage = "Error! Bad Request";
+          }
+        }).catch(err => {
+          this.isError = true;
+          this.errorMessage = err.message;
+        }).finally(() => {
+          this.isLoading = false;
+          this.$nextTick(() => {
+            this.initializeTabs(); // Initialize tabs only after DOM updates
+          });
+        });
       },
+      sendRequest(id) {
+        if (typeof id == "number") {
+          UserService.postAddRequest(id).then(response => {
+            if (response.status == 200) {
+              if (response.data != null) {
+                this.$store.dispatch('sendRequestSocket', { userId: id, requirementId: response.data });
+                //cập nhật action
+                this.initialValues.isSentRequest = true;
+              }
+            }
+          }).catch(error => console.log(error));
+        }
+      },
+      sendCancelRequest(id) {
+        if (typeof id == "number") {
+          UserService.sendCancelRequest(id).then(response => {
+            if (response.status == 200) {
+              //cập nhật action
+              this.initialValues.isSentRequest = false;
+            }
+          }).catch(error => console.log(error));
+        }
+      },
+      handleAccept(userId) {
+        UserService.postAddFriendActions(userId, true).then(response => {
+          let res = Object.assign({}, response);
+          if (res.status == 200 && res.data == 1) {
+            this.$store.dispatch("minusNotification");
+            //cập nhật action
+            this.fetchtUser();
+          }
+        }).catch(error => console.log(error));
+      },
+      handleCancel(userId) {
+        UserService.postAddFriendActions(userId, true, false).then(response => {
+          let res = Object.assign({}, response);
+          if (res.status == 200 && res.data == 2) {
+            this.$store.dispatch("minusNotification");
+            //cập nhật action
+            this.initialValues.isFriend = false;
+            this.initialValues.isReceivedRequest = false;
+          } 
+        }).catch(error => console.log(error));
+      },
+      handleUnfriend(userid) {
+        UserService.postUnFriend(userid).then(resp => {
+          let res = Object.assign({}, resp);
+          if (res.status == 200) {
+            //cập nhật action
+            this.fetchtUser();
+          }
+        })
+      }
     },
     mounted() {
-      UserService.postGetUserProfile().then(res => {
-        if (res.status == 200) {
-          this.setUser(res.data);
-          this.initialValues = {
-            username: res.data.username,
-            fullname: res.data.fullname
-          };
-        } else {
-          this.isError = true;
-          this.errorMessage= "Error! Bad Request";
+      const username = this.$route.params.username;
+      this.username = username;
+      this.fetchtUser();
+     
+    },
+    watch: {
+      '$route.params.username': {
+        immediate: false, // Gọi ngay lập tức khi component được mount
+        handler(newUsername, oldUsername) {
+          this.username = newUsername;
+          this.fetchtUser();
+          const triggerFirstTabEl = document.querySelector('#myTab li:first-child button')
+          Tab.getInstance(triggerFirstTabEl).show() 
         }
-      }).catch(err => {
-        this.isError= true;
-        this.errorMessage = err.message;
-      }).finally(() => {
-        this.isLoading = false;
-        this.$nextTick(() => {
-          this.initializeTabs(); // Initialize tabs only after DOM updates
-        });
-      });
+      }
     }
   };
 </script>
@@ -134,13 +232,16 @@
       <div class="col-12 h-100 flex flex-column align-items-center justify-content-center mt-5 text-danger" v-if="!isLoading && isError">
         <h1>{{errorMessage}}</h1>
       </div>
-      <div class="col-lg-3 col-md-4 col-sm-4 card" v-if="!isLoading && !isError">
+      <div class="col-lg-3 col-md-4 col-sm-4 card" v-if="!isLoading && !isError && (this.initialValues.isFriend != 0 || isOwnProfile)">
         <div class="card-header ">
           <div class='flex flex-column align-items-center justify-content-center pt-4'>
             <img :src="'/images/'+getUserImg" class="rounded flex items-center justify-center mr-2 md:w-10rem md:h-10rem sm:w-8rem sm:h-8rem" :alt="getUser.fullname" />
             <p class="mt-3 name-style">
               {{getUser.fullname}}
             </p>
+            <div>
+              <Button icon="pi pi-times" severity="danger" v-if="this.initialValues.isFriend && !this.initialValues.isSentRequest && !this.initialValues.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" aria-label="Cancel" variant="text"  label="Unfriend" @click="handleUnfriend(this.initialValues.userID)" />
+            </div>
           </div>
 
         </div>
@@ -153,18 +254,18 @@
               <button class="nav-link" id="friends-tab" data-bs-toggle="tab" data-bs-target="#friends" type="button" role="tab" aria-controls="friends" aria-selected="false">Friends</button>
             </li>
             <li class="list-group-item">
-              <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Settings</button>
+              <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false" v-if="isOwnProfile">Settings</button>
             </li>
             <li class="list-group-item">
-              <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Change Password</button>
+              <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false" v-if="isOwnProfile">Change Password</button>
             </li>
           </ul>
         </div>
       </div>
-      <div class="col-lg-9 col-md-8 col-sm-8"  v-if="!isLoading && !isError">
+      <div class="col-lg-9 col-md-8 col-sm-8 " :class="!isOwnProfile && (!this.initialValues.isFriend || this.group.grId==0)? 'mx-auto':'' "  v-if="!isLoading && !isError">
         <div class="tab-content">
           <div class="tab-pane active" id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-            <div class="d-flex flex-column mt-3">
+            <div class="d-flex flex-column mt-3" v-if="isOwnProfile ">
               <div class="mb-3">
                 <div class=" border-1 rounded p-3 border border-secondary-subtle flex flex-column align-items-center justify-content-center"  >
                   <div class="mb-3">
@@ -203,26 +304,57 @@
                 </div>
               </div>
             </div>
+            <div class="flex flex-column align-items-center justify-content-center" v-else>
+              <!--<h1>Hien Message voi user</h1>-->
+              <Chat :groupName="this.groupchat" v-if="this.initialValues.isFriend" />
+              <div class="h-50 card mt-5" style="width: 25rem; overflow: hidden" v-else>
+                <img alt="user header" :src="'/images/'+getUserImg" class="card-img-top"  />
+                
+                <div class="card-body">
+                  <div class="card-title name-style text-center">{{getUser.fullname}}</div>
+                </div>
+                <div class="card-footer">
+                  <div class="flex flex-row-reverse align-items-center justify-content-center md:flex-row gap-2 h-25">
+                    <ButtonGroup>
+                      <Button icon="pi pi-heart" class="flex-auto md:flex-initial whitespace-nowrap p-3"  variant="outlined" severity="help" raised></Button>
+                      <Button icon="pi pi-plus" label="Add Friend" v-if="!this.initialValues.isFriend && !this.initialValues.isSentRequest && !this.initialValues.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" @click="sendRequest(this.initialValues.userID)" raised></Button>
+
+                      <Button icon="pi pi-times" severity="warn" v-if="!this.initialValues.isFriend && this.initialValues.isSentRequest && !this.initialValues.isReceivedRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" variant="outlined" label="Cancel Request" @click="sendCancelRequest(this.initialValues.userID)" raised />
+                      <Button icon="pi pi-check" severity="success" v-if="!this.initialValues.isFriend && this.initialValues.isReceivedRequest &&  !this.initialValues.isSentRequest " class="flex-auto md:flex-initial whitespace-nowrap p-3" aria-label="Accept" label="Accept" @click="handleAccept(this.initialValues.userID)" raised />
+                      <Button icon="pi pi-times" severity="danger" v-if="!this.initialValues.isFriend && this.initialValues.isReceivedRequest && !this.initialValues.isSentRequest" class="flex-auto md:flex-initial whitespace-nowrap p-3" aria-label="Cancel" label="Cancel" @click="handleCancel(this.initialValues.userID)" raised />
+
+                    </ButtonGroup>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
           <div class="tab-pane" id="friends" role="tabpanel" aria-labelledby="friends-tab" tabindex="0">
             <div class="grid h-100 w-full">
-              <div class="col-8">
+              <div :class="isOwnProfile ? 'col-lg-8 col-md-10': 'col-lg-8 col-md-12'">
                 <div class="" v-if="getUser.relationships.length==0"></div>
-                <div v-else>
+                <div v-else style="overflow-y: auto; max-height: 720px;">
                   <DataView :value="getUser.relationships">
                     <template #list="slotProps">
                       <div class="flex flex-column flex-grow-1">
                         <div class="flex flex-column flex-grow-1">
                           <div v-for="(item, index) in slotProps.items" :key="index">
-                            <div class="card my-3" v-if="(isListFriends && item.user.isFriend )|| (!isListFriends && !item.user.isFriend )">
+                            <div class="card my-3" v-if="(isListFriends && item.user.isFriend )|| (!isListFriends && !item.user.isFriend ) || !isOwnProfile">
                               <div class="flex flex-row sm:flex-row sm:items-center p-3 gap-4  card-body">
                                 <div class="md:w-40 relative" style="width:150px; height:150px">
+                                  <router-link :to="{ name: 'profile', params: { username: item.user.username }}">
                                   <img :src="'/images/'+ item.user.avatar" class="block xl:block mx-auto rounded w-full" :alt="item.user.fullname" style="width: 100%; height: 100%;object-fit: cover " />
+                                  </router-link>
                                 </div>
                                 <div class="flex flex-col md:flex-row justify-content-between md:items-center flex-1 gap-6">
                                   <div >
-                                    <div class="text-lg font-medium mt-2">{{ item.user.fullname }}</div>
-                                    <HeartProgress :value="item.counting" />
+                                    <div class="text-lg font-medium mt-2">
+                                      <router-link :to="{ name: 'profile', params: { username: item.user.username } }" class="text-decoration-none text-black" >
+                                        {{ item.user.fullname }}
+                                      </router-link>
+                                    </div>
+                                    <HeartProgress v-if="isOwnProfile" :value="item.counting" />
                                   </div>
                                   <div>
 
@@ -237,13 +369,13 @@
                 </DataView>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-lg-4 col-md-2"  v-if="isOwnProfile">
                 <ul class="list-group list-group-flush" id="myTab2" role="tablist">
                   <li class="list-group-item">
                     <button class="nav-link active" id="listfriend-tab" data-bs-toggle="tab" data-bs-target="#listfriend" type="button" role="tab" aria-controls="listfriend" aria-selected="true" @click="toggleListFriend">Friends</button>
                   </li>
                   <li class="list-group-item">
-                    <button class="nav-link" id="listblock-tab" data-bs-toggle="tab" data-bs-target="#listblock" type="button" role="tab" aria-controls="listblock" aria-selected="false" @click="toggleListBlocked">Blocked</button>
+                    <button class="nav-link" id="listblock-tab" data-bs-toggle="tab" data-bs-target="#listblock" type="button" role="tab" aria-controls="listblock" aria-selected="false" @click="toggleListBlocked" >Blocked</button>
                   </li>
                 </ul>
               </div>
